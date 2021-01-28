@@ -1,0 +1,6 @@
+.idea
+/Qiber3D.egg-info/
+/dist/
+/build/
+/.coverage
+/coverage_html_report/
