@@ -11,7 +11,7 @@ from Qiber3D import config
 from Qiber3D import Network, IO
 
 
-config.log_level = 20
+config.log_level = 40
 
 random.seed('Qiber3D_Testing')
 
@@ -204,7 +204,7 @@ class TestSWC(Model.Load):
     @classmethod
     def tearDownClass(cls):
         try:
-            pass# cls.net.input_file.unlink()
+            cls.net.input_file.unlink()
         except PermissionError:
             pass
         super().tearDownClass()

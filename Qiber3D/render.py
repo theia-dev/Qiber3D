@@ -489,9 +489,9 @@ class Render:
             self.logger.info(f'Rasterizing network (voxel resolution : {voxel_resolution:.2E} voxel/unit)')
             image, offset = self._rasterize_network(self.network, resolution=voxel_resolution, segment_list=segment_list)
         image = ndimage.gaussian_filter(image.astype(np.float32), 1.0)
-        tif.imsave(str(out_path.absolute()), (image * 255).astype(np.uint8), bigtiff=True, compression='DEFLATE',
-                   resolution=(voxel_resolution, voxel_resolution, None),
-                   metadata={'spacing': voxel_resolution, 'unit': 'um', 'axes': 'ZYX'})
+        tif.imwrite(str(out_path.absolute()), (image * 255).astype(np.uint8), bigtiff=True, compression='DEFLATE',
+                    resolution=(voxel_resolution, voxel_resolution, None),
+                    metadata={'spacing': voxel_resolution, 'unit': 'um', 'axes': 'ZYX'})
         return out_path
 
     def export_intensity_projection(self, out_path='.', overwrite=False,

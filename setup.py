@@ -29,7 +29,7 @@ setup(name=config.app_name,
       zip_safe=True,
       keywords=['Skeleton', 'Network', 'Fiber', 'Reconstruction', 'Neurons',
                 'Vessel', 'Vascular', 'confocal', 'microscopy'],
-      python_requires='~=3.6',
+      python_requires='~=3.7',
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',
 
@@ -40,7 +40,6 @@ setup(name=config.app_name,
           'License :: OSI Approved :: MIT License',
 
           'Operating System :: OS Independent',
-          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3 :: Only'
