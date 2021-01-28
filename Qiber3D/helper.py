@@ -117,7 +117,7 @@ class PointLookUp:
 
     def __contains__(self, item):
         if isinstance(item, np.ndarray):
-            return self.__convert_point(item)
+            return self.__convert_point(item) in self.storage
         return item in self.storage
 
 

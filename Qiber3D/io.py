@@ -745,9 +745,11 @@ class IO:
             graph = nx.Graph()
             point_lookup = helper.PointLookUp()
             radius_lookup = {}
+            center= net.center
             for segment in net.segment.values():
                 last_pid = None
-                for n, point in enumerate(segment.point):
+                for n, raw_point in enumerate(segment.point):
+                    point = raw_point - center
                     if point in point_lookup:
                         current_pid = point_lookup[point]
                     else:
@@ -758,7 +760,6 @@ class IO:
                     last_pid = current_pid
 
             network_data = []
-            input()
             for fiber in (graph.subgraph(c).copy() for c in nx.connected_components(graph)):
                 fiber_data = []
                 start_points = None

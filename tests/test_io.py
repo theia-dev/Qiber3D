@@ -1,12 +1,15 @@
 import unittest
 from pathlib import Path
+import sys
 
 import numpy as np
 from numpy.testing import assert_allclose
 import random
 
+sys.path.insert(0, str(Path('.').parent.absolute()))
+from Qiber3D import config
 from Qiber3D import Network, IO
-from Qiber3D import config, helper
+
 
 config.log_level = 20
 
@@ -201,7 +204,7 @@ class TestSWC(Model.Load):
     @classmethod
     def tearDownClass(cls):
         try:
-            cls.net.input_file.unlink()
+            pass# cls.net.input_file.unlink()
         except PermissionError:
             pass
         super().tearDownClass()

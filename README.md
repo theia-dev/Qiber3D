@@ -1,16 +1,16 @@
 # Qiber3D <img src='https://github.com/theia-dev/Qiber3D/raw/master/docs/img/synthetic_animation_silver.gif' align="right"/>
 Automated quantification of fibrous networks
 
-[![PyPi](https://img.shields.io/pypi/v/Qiber3D.svg?style=for-the-badge)](https://pypi.org/project/Qiber3D/)
-[![Status](https://img.shields.io/pypi/status/Qiber3D.svg?style=for-the-badge)](https://pypi.org/project/Qiber3D/)
+[![PyPi](https://img.shields.io/pypi/v/qiber3d.svg?style=for-the-badge)](https://pypi.org/project/Qiber3D/)
+[![Status](https://img.shields.io/pypi/status/qiber3d.svg?style=for-the-badge)](https://pypi.org/project/Qiber3D/)
 
-[![Documentation](https://img.shields.io/readthedocs/Qiber3D.svg?style=for-the-badge)](https://promad.readthedocs.io)
+[![Documentation](https://img.shields.io/readthedocs/qiber3d.svg?style=for-the-badge)](https://Qiber3D.readthedocs.io)
 
-[![License](https://img.shields.io/github/license/theia-dev/Qiber3D.svg?style=for-the-badge)](https://github.com/theia-dev/Qiber3D/blob/master/LICENSE.txt)
-[![Github issues](https://img.shields.io/github/issues/theia-dev/Qiber3D.svg?style=for-the-badge)](https://github.com/theia-dev/Qiber3D/issues)
+[![License](https://img.shields.io/github/license/theia-dev/qiber3d.svg?style=for-the-badge)](https://github.com/theia-dev/Qiber3D/blob/master/LICENSE.txt)
+[![Github issues](https://img.shields.io/github/issues/theia-dev/qiber3d.svg?style=for-the-badge)](https://github.com/theia-dev/Qiber3D/issues)
 
-[![Coverage](https://img.shields.io/coveralls/github/theia-dev/Qiber3D?style=for-the-badge)](https://coveralls.io/github/theia-dev/Qiber3D)
-[![Build](https://img.shields.io/travis/theia-dev/Qiber3D.svg?style=for-the-badge)](https://travis-ci.org/theia-dev/Qiber3D)
+[![Coverage](https://img.shields.io/coveralls/github/theia-dev/qiber3d?style=for-the-badge)](https://coveralls.io/github/theia-dev/Qiber3D)
+[![Build](https://img.shields.io/travis/theia-dev/qiber3d.svg?style=for-the-badge)](https://travis-ci.org/theia-dev/Qiber3D)
 
 
 ## Setup
