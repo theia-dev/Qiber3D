@@ -24,8 +24,11 @@ setup(name=config.app_name,
       license='MIT',
       packages=['Qiber3D'],
       include_package_data=True,
-      install_requires=["numpy", "jinja2", "matplotlib", "tqdm", "scikit-image", "scipy", "pims", "vedo", "kimimaro",
+      install_requires=["numpy", "jinja2", "matplotlib", "tqdm", "scikit-image", "scipy", "pims", "vedo",
                         "networkx", "nd2reader", "blosc", "openpyxl", "lxml"],
+      extras_require={
+          'kimimaro': ['kimimaro']
+      },
       zip_safe=True,
       keywords=['Skeleton', 'Network', 'Fiber', 'Reconstruction', 'Neurons',
                 'Vessel', 'Vascular', 'confocal', 'microscopy'],

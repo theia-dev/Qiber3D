@@ -2,7 +2,6 @@ import logging
 from pathlib import Path
 from textwrap import dedent
 
-import kimimaro
 import networkx as nx
 import numpy as np
 import pims
@@ -10,6 +9,11 @@ from nd2reader import ND2Reader
 from scipy import ndimage
 from scipy.optimize import curve_fit
 from skimage import filters
+
+try:
+    import kimimaro
+except ImportError:
+    kimimaro = None
 
 import Qiber3D
 from Qiber3D import config, helper
@@ -207,6 +211,9 @@ class Extractor:
 
     @staticmethod
     def __teasar_reconstruct(image, spacing, core_count=0, debug=False):
+        if kimimaro is None:
+            raise ImportError("kimimaro is not installed (pip -U install kimimaro)")
+            return
         label_im, nb_labels = ndimage.label(image)
         teasar_params = {}
         for key in ['scale', 'const', 'pdrf_exponent', 'pdrf_scale',
