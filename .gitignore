@@ -4,3 +4,5 @@
 /build/
 /.coverage
 /coverage_html_report/
+x3dom.js
+x3dom.css

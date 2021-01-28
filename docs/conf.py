@@ -12,6 +12,17 @@
 #
 import os
 import sys
+from pathlib import Path
+import urllib.request
+
+x3dom_url = 'http://www.x3dom.org/release/x3dom.'
+for suffix in ['js', 'css']:
+    save_path = Path('static') / suffix / f'x3dom.{suffix}'
+    if save_path.is_file():
+        save_path.unlink()
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    urllib.request.urlretrieve(x3dom_url+suffix, save_path)
+
 sys.path.insert(0, os.path.abspath('../'))
 sys.path.append(os.path.abspath("./ext"))
 
@@ -61,11 +72,11 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['static']
 
 html_css_files = [
-    'http://www.x3dom.org/release/x3dom.css',
+    'css/x3dom.css',
 ]
 
 html_js_files = [
-    'http://www.x3dom.org/release/x3dom.js',
+    'js/x3dom.js',
 ]
 
 # autodoc_typehints = 'description'  # show type hints in doc body instead of signature
