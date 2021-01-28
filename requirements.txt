@@ -11,4 +11,3 @@ nd2reader
 blosc
 openpyxl
 lxml
-kimimaro[kimimaro]
