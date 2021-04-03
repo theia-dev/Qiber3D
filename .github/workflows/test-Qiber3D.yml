@@ -41,6 +41,6 @@ jobs:
         coverage run -m unittest
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v1
-      if: python-version=='3.8'
+      if: matrix.python-version=='3.8'
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
