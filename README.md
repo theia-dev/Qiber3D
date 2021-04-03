@@ -9,8 +9,8 @@ Automated quantification of fibrous networks
 [![License](https://img.shields.io/github/license/theia-dev/qiber3d.svg?style=for-the-badge)](https://github.com/theia-dev/Qiber3D/blob/master/LICENSE.txt)
 [![Github issues](https://img.shields.io/github/issues/theia-dev/qiber3d.svg?style=for-the-badge)](https://github.com/theia-dev/Qiber3D/issues)
 
-[![Coverage](https://img.shields.io/coveralls/github/theia-dev/qiber3d?style=for-the-badge)](https://coveralls.io/github/theia-dev/Qiber3D)
-[![Build](https://img.shields.io/travis/theia-dev/qiber3d.svg?style=for-the-badge)](https://travis-ci.org/theia-dev/Qiber3D)
+[![Coverage](https://img.shields.io/codecov/c/gh/theia-dev/Qiber3D?token=UCNHVP172J&style=for-the-badge)](https://coveralls.io/github/theia-dev/Qiber3D)
+[![Build](https://img.shields.io/github/workflow/status/theia-dev/Qiber3D/Qiber3D.svg?style=for-the-badge)](https://travis-ci.org/theia-dev/Qiber3D)
 
 
 ## Setup

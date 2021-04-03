@@ -37,4 +37,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest
+        pip install coverage
+        coverage run -m unittest
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v1
+      if: python-version=='3.8'
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
