@@ -203,7 +203,7 @@ class Extractor:
 
         if self.config.extract.morph.apply:
             self.logger.info('Morph binary representation')
-            self.image_stack = self.filter_morph(self.image_stack)
+            self.image_stack = self.filter_morph(self.image_stack, voxel_spacing=self.xy_spacing)
             self.__show_step('Morphed binary (final)', binary=True, spacing=[self.xy_spacing] * 3)
 
         if self.config.extract.save_steps:
@@ -284,16 +284,16 @@ class Extractor:
         return segment_data
 
     @staticmethod
-    def filter_morph(image, iterations=None, remove_dia=None):
+    def filter_morph(image, iterations=None, remove_vol=None, voxel_spacing = 1):
         if iterations is None:
             iterations = config.extract.morph.iterations
-        if remove_dia is None:
-            remove_dia = config.extract.morph.remove_dia
+        if remove_vol is None:
+            remove_vol = config.extract.morph.remove_vol
+        remove_vol /= voxel_spacing ** 3
         image = ndimage.binary_dilation(image, iterations=iterations)
         label_im, nb_labels = ndimage.label(image)
         sizes = ndimage.sum(image, label_im, range(nb_labels + 1))
-        volume = (remove_dia + 2 * iterations) ** 3
-        mask = sizes > volume
+        mask = sizes > remove_vol
         image = mask[label_im]
         return ndimage.binary_erosion(image, iterations=iterations)
 

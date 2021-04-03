@@ -16,13 +16,16 @@ Welcome to Qiber3D's documentation!
 
 * :ref:`genindex`
 
-Citation
---------
-If you use ``Qiber3D`` in your work please cite [Jaeschke-Eckert2021]_.
 
-.. [Jaeschke-Eckert2021] Jaeschke, A., Eckert, H. & Bray, L.J.
-    Qiber3D: subtitle.
-    *Journal* **1**, 1 (2021). doi:`10.****/******`_
+.. only:: comment
 
-.. _10.****/******: https://google.com
+ Citation
+ --------
+ If you use ``Qiber3D`` in your work please cite [Jaeschke-Eckert2021]_.
+
+ .. [Jaeschke-Eckert2021] Jaeschke, A., Eckert, H. & Bray, L.J.
+     Qiber3D: subtitle.
+     *Journal* **1**, 1 (2021). doi:`10.****/******`_
+
+ .. _10.****/******: https://google.com
 

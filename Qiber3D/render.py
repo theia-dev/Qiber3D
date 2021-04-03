@@ -418,7 +418,7 @@ class Render:
 
         if needs_unlink:
             out_path.unlink()
-        cls.__base_render(image_name=out_path.name, work_dir=out_path.parent, cut_to_fit=True, rgba=rgba)
+        cls._base_render(image_name=out_path.name, work_dir=out_path.parent, cut_to_fit=True, rgba=rgba)
         vedo_obj.close()
         return out_path
 
@@ -595,7 +595,7 @@ class Render:
 
         if needs_unlink:
             out_path.unlink()
-        self.__base_render(image_name=out_path.name, work_dir=out_path.parent, cut_to_fit=True, rgba=rgba)
+        self._base_render(image_name=out_path.name, work_dir=out_path.parent, cut_to_fit=True, rgba=rgba)
 
         vedo_obj.close()
 
@@ -695,7 +695,7 @@ class Render:
 
             for n in work_list:
                 vp.show(azimuth=(360 / frames))
-                self.__base_render(image_name=f'ANI_{n:07}.png', work_dir=work_dir, rgba=rgba, cut=cut)
+                self._base_render(image_name=f'ANI_{n:07}.png', work_dir=work_dir, rgba=rgba, cut=cut)
 
             vp.close()
 
@@ -728,7 +728,7 @@ class Render:
             self.logger.info(f"New animation saved under: {out_path.absolute()}")
 
     @classmethod
-    def __base_render(cls, image_name=None, work_dir=None, cut_to_fit=False, rgba=False, cut=None):
+    def _base_render(cls, image_name=None, work_dir=None, cut_to_fit=False, rgba=False, cut=None):
 
         if work_dir is None:
             cls.logger.warn('No work folder available to render data into.')

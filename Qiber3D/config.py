@@ -3,7 +3,7 @@ import logging
 
 app_name = 'Qiber3D'
 """Name of the app"""
-version_number = (0, 4, 0)
+version_number = (0, 5, 1)
 """tuple(int): version number"""
 version = f'{version_number[0]}.{version_number[1]}.{version_number[2]}'
 """str: version"""
@@ -91,15 +91,15 @@ class extract:
         """bool: apply the dilation and erosion to the image"""
         iterations = 5
         """int:number of iterations"""
-        remove_dia = 10
-        """float: remove islands with volume smaller than a sphere with diameter `remove_dia`"""
+        remove_vol = 100
+        """float: remove islands with volume smaller than volume smaller than `remove_vol` - in (voxel_size units)^3"""
 
     class smooth:
         """Gaussian filter"""
         apply = True
         """bool: apply a gaussian filter and erosion to the image"""
         sigma = 2.0
-        """float: standard deviation for Gaussian kernel in pixel"""
+        """float: standard deviation for Gaussian kernel in voxel"""
         truncate = 2.0
         """float: truncate the filter after this many standard deviations"""
 
