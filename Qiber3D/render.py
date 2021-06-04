@@ -247,10 +247,10 @@ class Render:
     @classmethod
     def _rasterize_network(cls, net, resolution=1.0, segment_list=None, debug=False):
         max_r = net.max_radius
-        dimension = np.array((net.bbox_size + np.ceil(max_r * 3)) * resolution, dtype=np.int)
-        offset = np.array((net.bbox[0] - np.ceil(max_r*1.5)) * resolution, dtype=np.int)
+        dimension = np.array((net.bbox_size + np.ceil(max_r * 3)) * resolution, dtype=int)
+        offset = np.array((net.bbox[0] - np.ceil(max_r*1.5)) * resolution, dtype=int)
         exact_offset = (net.bbox[0] - np.ceil(max_r*1.5)) * resolution
-        base = np.zeros(dimension, dtype=np.bool)
+        base = np.zeros(dimension, dtype=bool)
 
         work_list = []
         if segment_list is None:

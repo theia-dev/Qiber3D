@@ -58,7 +58,7 @@ class Extractor:
         self.input_path = Path(input_path)
 
         # Data filled with self.prepare()
-        self.shape = np.zeros(3, dtype=np.int)
+        self.shape = np.zeros(3, dtype=int)
         self.positions = [None, None, None]
         self.voxel_size = voxel_size
 

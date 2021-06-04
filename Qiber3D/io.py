@@ -934,7 +934,7 @@ class IO:
                     value = value.tolist()
                 elif type(value) in [np.float32, np.float64]:
                     value = float(value)
-                elif isinstance(value, np.int):
+                elif isinstance(value, int):
                     value = int(value)
                 return value
 
