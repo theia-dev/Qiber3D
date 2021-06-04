@@ -3,7 +3,7 @@ import logging
 
 app_name = 'Qiber3D'
 """Name of the app"""
-version_number = (0, 5, 1)
+version_number = (0, 5, 2)
 """tuple(int): version number"""
 version = f'{version_number[0]}.{version_number[1]}.{version_number[2]}'
 """str: version"""

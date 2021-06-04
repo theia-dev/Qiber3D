@@ -164,14 +164,22 @@ class Reconstruct:  # BJH
                     node = list(outer_nodes.keys())[0]
                     # add longest 'short' path to the outer segment if just one, else create new segment
                     possible_paths = [entry for entry in nx.shortest_path(conglomerate, node).values() if len(entry) > 1]
-                    longest_path = max(possible_paths, key=lambda p: cls.__path_length(conglomerate, p))
+                    if possible_paths:
+                        longest_path = max(possible_paths, key=lambda p: cls.__path_length(conglomerate, p))
+                    else:
+                        longest_path = None
 
                     if outer_nodes[node]['cc'] == 1:
-                        cls.__extend_segment_by_path(net, outer_nodes[node]['connections'][0][0], node, fiber.graph, longest_path)
+                        cls.__extend_segment_by_path(net, outer_nodes[node]['connections'][0][0], node, fiber.graph,
+                                                     longest_path)
                     else:
-                        if cls.__path_length(conglomerate, longest_path) > sliver_threshold:
-                            cls.__add_segment_from_path(net, fiber.graph, longest_path)
-                        else:
+                        seg_added = False
+                        if longest_path is not None:
+                            if cls.__path_length(conglomerate, longest_path) > sliver_threshold:
+                                cls.__add_segment_from_path(net, fiber.graph, longest_path)
+                                seg_added = True
+
+                        if seg_added == False:
                             if outer_nodes[node]['cc'] == 2:
                                 sid_list = list((c[0] for c in outer_nodes[node]['connections']))
                                 cls.__join_segments(net, sid_list)
@@ -322,7 +330,7 @@ class Reconstruct:  # BJH
             del to_points
             graph.add_edges_from(zip(from_points_ids, to_points_ids))
 
-        cls.logger.info(f'Build Qiber3D.Network for the raw graph')
+        cls.logger.info(f'Build Qiber3D.Network from the raw graph')
         segment_data = Qiber3D.IO.load._from_graph(graph, point_lookup=volume_shape,
                                                    radius_lookup=distances, ravel=True)
         data = {
