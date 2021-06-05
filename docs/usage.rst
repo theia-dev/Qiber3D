@@ -6,4 +6,4 @@ Usage
 
    visualization
    load_export
-   usage_config
+   usage_logging

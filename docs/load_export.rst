@@ -12,8 +12,8 @@ ND2 example
 .. code-block:: python
 
     >>> import logging
-    >>> from Qiber3D import Network
-    >>> from Qiber3D import Network, config
+    >>> from Qiber3D import Network, config, helper
+    >>> helper.change_log_level(logging.DEBUG)
     >>> config.extract.nd2_channel_name = 'FITC'
     >>> config.log_level = logging.DEBUG
     >>> net = Network.load('microvascular_network.nd2')

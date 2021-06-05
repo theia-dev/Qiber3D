@@ -1,3 +1,4 @@
+wheel==0.36.2
 nd2reader==3.3.0
 vedo==2021.0.3
 PIMS==0.5

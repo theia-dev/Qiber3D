@@ -28,10 +28,10 @@ To follow this example you can download the image stack from figshare under [doi
 
 ```python
 import logging
-from Qiber3D import Network, config
+from Qiber3D import Network, config, helper
 
 config.extract.nd2_channel_name = 'FITC'
-config.log_level = logging.DEBUG
+helper.change_log_level(logging.DEBUG)
 
 net = Network.load('microvascular_network.nd2')
 print(net)
