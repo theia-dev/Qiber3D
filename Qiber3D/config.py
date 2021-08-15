@@ -64,6 +64,8 @@ class extract:
     """bool: reduce the memory footprint by using less precision when possible"""
     voxel_size = None
     """list(float): size of a voxel in each axis"""
+    invert = False
+    """bool: invert the input image (extracted structures should be high and background low)"""
     use_teasar = False
     """bool: if ``True`` use the `kimimaro <https://github.com/seung-lab/kimimaro>`_ 
     TEASAR implementation for recunstruction"""
@@ -72,6 +74,11 @@ class extract:
         """Z-Drop - Intensity attenuation correction"""
         apply = True
         """bool: apply the intensity attenuation correction to the image"""
+
+    class isotropic_resampling:
+        """Rescaling to cubic voxels"""
+        target = 'z'
+        """string: select if the ``z`` resolution or the ``xy`` resolution should be adjust to form cubic voxels"""
 
     class median:
         """Median filter - despeckle"""

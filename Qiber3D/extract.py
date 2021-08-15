@@ -162,6 +162,8 @@ class Extractor:
         # scale all images from 0 to 1 and store it at the selected resolution
         raw_image = np.zeros((self.shape[2], self.shape[0], self.shape[1]), dtype=self.dtype)
         raw_image[:] = (images - np.min(images))/(np.max(images)-np.min(images))
+        if self.config.extract.invert:
+            raw_image = 1.0 - raw_image
         images.close()
         return raw_image
 
@@ -170,7 +172,10 @@ class Extractor:
 
         if self.config.extract.median.apply:
             self.logger.info('Median Filter (despeckle)')
-            self.image_stack = self.filter_median(self.image_stack)
+            if self.config.extract.low_memory:
+                self.image_stack = self.filter_median(self.image_stack.astype(np.float32)).astype(self.dtype)
+            else:
+                self.image_stack = self.filter_median(self.image_stack)
             if self.config.extract.save_steps:
                 self.storage['is_median'] = self.image_stack
             self.__show_step('Median _filter')
@@ -185,9 +190,13 @@ class Extractor:
         self.logger.info('Resample image to cubic voxels')
         z_change = self.z_spacing / self.xy_spacing
         if self.config.extract.low_memory:
-            self.image_stack = self.filter_resample(self.image_stack.astype(np.float32), z_change=z_change).astype(self.dtype)
+            self.image_stack = self.filter_resample(self.image_stack.astype(np.float32), z_change=z_change,
+                                                    target=self.config.extract.isotropic_resampling.target).astype(self.dtype)
         else:
-            self.image_stack = self.filter_resample(self.image_stack, z_change=z_change)
+            self.image_stack = self.filter_resample(self.image_stack, z_change=z_change,
+                                                    target=self.config.extract.isotropic_resampling.target)
+        if self.config.extract.isotropic_resampling.target == 'xy':
+            self.xy_spacing = self.z_spacing
         self.__show_step('Cubic resampling', spacing=[self.xy_spacing]*3)
 
         if self.config.extract.smooth.apply:
@@ -215,7 +224,7 @@ class Extractor:
     @staticmethod
     def __teasar_reconstruct(image, spacing, core_count=0, debug=False):
         if kimimaro is None:
-            raise ImportError("kimimaro is not installed (pip -U install kimimaro)")
+            raise ImportError("kimimaro is not installed (pip install -U kimimaro)")
             return
         label_im, nb_labels = ndimage.label(image)
         teasar_params = {}
@@ -287,14 +296,14 @@ class Extractor:
         return segment_data
 
     @staticmethod
-    def filter_morph(image, iterations=None, remove_vol=None, voxel_spacing = 1):
+    def filter_morph(image, iterations=None, remove_vol=None, voxel_spacing=1):
         if iterations is None:
             iterations = config.extract.morph.iterations
         if remove_vol is None:
             remove_vol = config.extract.morph.remove_vol
         remove_vol /= voxel_spacing ** 3
         image = ndimage.binary_dilation(image, iterations=iterations)
-        ndimage.binary_erosion(image, iterations=iterations)
+        image = ndimage.binary_erosion(image, iterations=iterations)
         label_im, nb_labels = ndimage.label(image)
         sizes = ndimage.sum(image, label_im, range(nb_labels + 1))
         mask = sizes > remove_vol
@@ -302,9 +311,12 @@ class Extractor:
         return image
 
     @staticmethod
-    def filter_resample(image, z_change=1.0):
+    def filter_resample(image, z_change=1.0, target='z'):
         if round(z_change, 3) != 1.0:
-            return ndimage.zoom(image, (z_change, 1, 1), order=1)
+            if target == 'z':
+                return ndimage.zoom(image, (z_change, 1, 1), order=1)
+            elif target == 'xy':
+                return ndimage.zoom(image, (1, 1/z_change, 1/z_change), order=1)
         else:
             return image
 
@@ -331,6 +343,7 @@ class Extractor:
     def binary_representation(image, threshold=None):
         if threshold is None:
             threshold = config.extract.binary.threshold
+        print(threshold)
         if threshold is None:
             threshold = 'otsu'
         elif type(threshold) == str:
@@ -349,6 +362,7 @@ class Extractor:
                 threshold = filters.threshold_yen(image)
         else:
             threshold = threshold / 100 * np.max(image)
+        print(threshold)
         return image >= threshold
 
     @staticmethod

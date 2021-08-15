@@ -314,6 +314,7 @@ def get_logger(name='Qiber3D'):
 def change_log_level(log_level, name='Qiber3D'):
     logger = logging.getLogger(name)
     logger.setLevel(log_level)
+    return log_level
 
 
 def config_logger(name='Qiber3D'):
