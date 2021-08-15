@@ -65,7 +65,7 @@ class extract:
     voxel_size = None
     """list(float): size of a voxel in each axis"""
     use_teasar = False
-    """bool: if `True` use the `kimimaro <https://github.com/seung-lab/kimimaro>`_ 
+    """bool: if ``True`` use the `kimimaro <https://github.com/seung-lab/kimimaro>`_ 
     TEASAR implementation for recunstruction"""
 
     class z_drop:
@@ -78,21 +78,24 @@ class extract:
         apply = True
         """bool: apply the median filter to the image"""
         size = 3
-        """int: size of the neighborhood"""
+        """(int or array): size of the neighborhood cuboid, if an int is given the all three axis have the same length"""
+        footprint = None
+        """array: If set, this 3D binary array is used instead of the ``size`` parameter to describe the neighborhood"""
 
     class binary:
         """Binarization"""
-        threshold = None
-        """float: binarization threshold in percent, if `None` use Otsu estimation"""
+        threshold = 'Otsu'
+        """(float or string): binarization threshold in percent, or name of the following auto threshold methods -
+        ``Otsu``, ``Isodata``, ``Li``, ``Mean``, ``Minimum``, ``Triangle``, Yen (`examples <https://scikit-image.org/docs/0.18.x/auto_examples/segmentation/plot_thresholding.html>`_)"""
 
     class morph:
         """Morphological dilation and erosion"""
         apply = True
         """bool: apply the dilation and erosion to the image"""
         iterations = 5
-        """int:number of iterations"""
+        """int: number of iterations"""
         remove_vol = 100
-        """float: remove islands with volume smaller than volume smaller than `remove_vol` - in (voxel_size units)^3"""
+        """float: remove islands with volume smaller than volume smaller than ``remove_vol`` - in (voxel_size units)^3"""
 
     class smooth:
         """Gaussian filter"""
@@ -102,6 +105,13 @@ class extract:
         """float: standard deviation for Gaussian kernel in voxel"""
         truncate = 2.0
         """float: truncate the filter after this many standard deviations"""
+
+    class thinning:
+        """Thinning based reconstruction"""
+        voxel_per_point = 10
+        """float: distance between interpolated points (every segment will have at least five points)"""
+        sliver_threshold = 6
+        """int: segments with less than ``sliver_threshold`` voxels will be treated specially (minimum of 6)"""
 
     class teasar:
         """TEASER reconstruction - for parameter explanation see

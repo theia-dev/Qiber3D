@@ -116,7 +116,7 @@ class Reconstruct:  # BJH
         Clean a :class:`Qiber3D.Network` from small sliver.
 
         :param Qiber.Network net: network to smooth
-        :param float sliver_threshold: treat smaller segments
+        :param int sliver_threshold: treat smaller segments
         :return:
         """
         cls.logger.info(f'Cleaning Network')
@@ -257,7 +257,7 @@ class Reconstruct:  # BJH
         cls.logger.info(f'Smooth Segments')
         cpd = net.cross_point_dict
         for sid, segment in net.segment.items():
-            resolution = max(5, int(round(segment.length / voxel_per_point)))
+            resolution = max(5, int(np.floor(segment.length / voxel_per_point)+1))
             base_points = np.zeros((4, len(segment.point),))
             base_points[:3, :] = segment.point.T
             base_points[3, :] = segment.radius
@@ -341,7 +341,7 @@ class Reconstruct:  # BJH
         return net
 
     @classmethod
-    def get_network(cls, image, scale=1.0, input_path=None):
+    def get_network(cls, image, scale=1.0, input_path=None, sliver_threshold=6, voxel_per_point=10.0):
         """
         Create a cleaned and smoothed :class:`Qiber3D.Network` from a binary image.
 
@@ -349,11 +349,13 @@ class Reconstruct:  # BJH
         :param float scale: ratio between voxel size and length unit
         :param input_path: set this path as new imput path of the returning network
         :type input_path: str, Path
+        :param int sliver_threshold: treat smaller segments
+        :param float voxel_per_point: distance between interpolated points
         :return: :class:`Qiber3D.Network`
         """
         net = cls.create_base_network(image)
-        cls.clean(net)
+        cls.clean(net, sliver_threshold=sliver_threshold)
         net = Qiber3D.IO.load.network(net)
-        cls.smooth(net)
+        cls.smooth(net, voxel_per_point=voxel_per_point)
         net = Qiber3D.IO.load.network(net, scale=scale, input_path=input_path)
         return net

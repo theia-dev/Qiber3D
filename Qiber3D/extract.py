@@ -119,7 +119,10 @@ class Extractor:
             self.net = Qiber3D.Network(network_data)
         else:
             self.net = Qiber3D.Reconstruct.get_network(self.image_stack, scale=self.xy_spacing,
-                                                       input_path=self.input_path)
+                                                       input_path=self.input_path,
+                                                       sliver_threshold=self.config.extract.thinning.sliver_threshold,
+                                                       voxel_per_point=self.config.extract.thinning.voxel_per_point
+                                                       )
         self.net.extractor_data = ex_data
         self.net.extractor_steps = self.storage
 
@@ -291,11 +294,12 @@ class Extractor:
             remove_vol = config.extract.morph.remove_vol
         remove_vol /= voxel_spacing ** 3
         image = ndimage.binary_dilation(image, iterations=iterations)
+        ndimage.binary_erosion(image, iterations=iterations)
         label_im, nb_labels = ndimage.label(image)
         sizes = ndimage.sum(image, label_im, range(nb_labels + 1))
         mask = sizes > remove_vol
         image = mask[label_im]
-        return ndimage.binary_erosion(image, iterations=iterations)
+        return image
 
     @staticmethod
     def filter_resample(image, z_change=1.0):
@@ -313,17 +317,36 @@ class Extractor:
         return ndimage.gaussian_filter(image, sigma, mode='mirror', truncate=truncate)
 
     @staticmethod
-    def filter_median(image, size=None):
+    def filter_median(image, size=None, footprint=None):
         if size is None:
             size = config.extract.median.size
-        return ndimage.median_filter(image, size=size)
+        if footprint is None:
+            footprint = config.extract.median.footprint
+        if footprint is not None:
+            return ndimage.median_filter(image, footprint=footprint)
+        else:
+            return ndimage.median_filter(image, size=size)
 
     @staticmethod
     def binary_representation(image, threshold=None):
         if threshold is None:
             threshold = config.extract.binary.threshold
         if threshold is None:
-            threshold = filters.threshold_otsu(image)
+            threshold = 'otsu'
+        elif type(threshold) == str:
+            threshold = threshold.lower().strip()
+            if threshold == 'otsu':
+                threshold = filters.threshold_otsu(image)
+            elif threshold == 'isodata':
+                threshold = filters.threshold_isodata(image)
+            elif threshold == 'mean':
+                threshold = filters.threshold_mean(image)
+            elif threshold == 'minimum':
+                threshold = filters.threshold_minimum(image)
+            elif threshold == 'triangle':
+                threshold = filters.threshold_triangle(image)
+            elif threshold == 'yen':
+                threshold = filters.threshold_yen(image)
         else:
             threshold = threshold / 100 * np.max(image)
         return image >= threshold
