@@ -7,7 +7,9 @@ Based on the file suffix the corresponding part of :class:`Qiber3D.IO.load` is u
 
 ND2 example
 ^^^^^^^^^^^
-.. note:: To follow this example you can download the image stack from figshare under `doi:10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
+.. note:: To follow this example you can download the image stack from figshare under
+          doi:`10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
+          To directly download the ND2 file on the commandline curl can be used ``curl -X GET "https://api.figshare.com/v2/file/download/26211077"``.
 
 .. code-block:: python
 
@@ -58,6 +60,53 @@ The created :file:`.qiber` can be loaded as any other supported file type.
 
     >>> net = Network.load('Exp190309_PrMECs-NPF180_gel4_ROI-c.qiber')
 
+
+TIFF example
+^^^^^^^^^^^^
+.. note:: To follow this example you can download the image stack from figshare under
+          doi:`10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
+          To directly download the TIFF file on the commandline curl can be used ``curl -X GET "https://api.figshare.com/v2/file/download/"``.
+
+
+.. code-block:: python
+
+    >>> import logging
+    >>> from Qiber3D import Network, config, helper
+    >>> helper.change_log_level(logging.DEBUG)
+    >>> config.log_level = logging.DEBUG
+    >>> net = Network.load('microvascular_network.tif', channel=2)
+    Qiber3D_extract [INFO] Load image data from microvascular_network.tif
+    Qiber3D_extract [INFO] Median Filter (despeckle)
+    Qiber3D_extract [INFO] Z-Drop correction
+    Qiber3D_extract [INFO] Resample image to cubic voxels
+    Qiber3D_extract [INFO] Apply gaussian filter
+    Qiber3D_extract [INFO] Generate binary representation
+    Qiber3D_extract [INFO] Morph binary representation
+    Qiber3D_extract [INFO] reconstruct image
+    Qiber3D_reconstruct [INFO] Skeletonize image by thinning
+    Qiber3D_reconstruct [INFO] Euclidean distance transformation
+    Qiber3D_reconstruct [INFO] Link up skeleton
+    Qiber3D_reconstruct [INFO] Build Qiber3D.Network for the raw graph
+    Qiber3D_reconstruct [INFO] Cleaning Network
+    Qiber3D_reconstruct [INFO] Smooth Segments
+    >>> print(net)
+    Input file: microvascular_network.nd2
+      Number of fibers: 459 (clustered 97)
+      Number of segments: 660
+      Number of branch points: 130
+      Total length: 16056.46
+      Total volume: 1240236.70
+      Average radius: 4.990
+      Cylinder radius: 4.959
+      Bounding box volume: 681182790
+
+A reconstructed network can saved as we did before with :meth:`Qiber3D.Network.save`.
+The save function can be given a name for the save file.
+
+.. code-block:: python
+
+    >>> net.save('reconstructed_net.qiber')
+    Qiber3D_core [INFO] Network saved to reconstructed_net.qiber
 
 Synthetic example
 ^^^^^^^^^^^^^^^^^

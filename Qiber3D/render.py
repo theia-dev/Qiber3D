@@ -179,9 +179,13 @@ class Render:
         """
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
         vedo.settings.useParallelProjection = True
-
-        tube_text = vedo.Text2D(self.network.name, c='black')
-        window = vedo.show(object_list + [tube_text], axes=1)
+        if config.render.notebook:
+            tube_text = []
+        else:
+            tube_text = [vedo.Text2D(self.network.name, c='black')]
+        window = vedo.show(object_list + tube_text, axes=1)
+        if config.render.notebook:
+            return window
         window.close()
 
     def compare(self, color_mode='flat', color_map='jet', color=None, object_type=None, segment_list=None):

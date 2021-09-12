@@ -3,7 +3,7 @@ import logging
 
 app_name = 'Qiber3D'
 """Name of the app"""
-version_number = (0, 5, 2)
+version_number = (0, 5, 3)
 """tuple(int): version number"""
 version = f'{version_number[0]}.{version_number[1]}.{version_number[2]}'
 """str: version"""
@@ -35,6 +35,8 @@ class render:
     """int: horizontal resolution for images"""
     color = (0.9, 0.2, 0.2)
     """tuple(floats): standard foreground color"""
+    notebook = False
+    """bool: switch to adapt render pipeline for jupyter notebooks"""
 
 
 # settings for figure

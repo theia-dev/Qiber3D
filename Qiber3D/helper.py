@@ -317,6 +317,17 @@ def change_log_level(log_level, name='Qiber3D'):
     return log_level
 
 
+def prepare_notebook():
+    import vedo
+    try:
+        import k3d
+    except ImportError:
+        print('prepare_notebook: k3d module could not be found')
+    vedo.settings.notebookBackend = 'k3d'
+    vedo.settings.backend = 'k3d'
+    config.render.notebook = True
+
+
 def config_logger(name='Qiber3D'):
     logger = logging.getLogger(name)
     logger.setLevel(config.log_level)
