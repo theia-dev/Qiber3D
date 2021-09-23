@@ -65,7 +65,7 @@ TIFF example
 ^^^^^^^^^^^^
 .. note:: To follow this example you can download the image stack from figshare under
           doi:`10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
-          To directly download the TIFF file on the commandline curl can be used ``curl -X GET "https://api.figshare.com/v2/file/download/"``.
+          To directly download the TIFF file on the commandline curl can be used ``curl -X GET "https://api.figshare.com/v2/file/download/30771817"``.
 
 
 .. code-block:: python

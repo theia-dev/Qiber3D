@@ -67,7 +67,7 @@ The full list of possible ``color_mode`` parameter is documented with :meth:`Qib
 .. x3d:: "_static/x3d/synthetic_show_segment.x3d"
 
 Sometimes it can be helpful to display just the reconstructed center-lines of a network.
-To archive this the parameter ``object_type`` can be set tp ``'line'``.
+To archive this the parameter ``object_type`` can be set to ``'line'``.
 
 .. code-block:: python
 
@@ -85,7 +85,8 @@ While interactive representations are helpful when inspecting a small number of 
 For this purpose :meth:`Qiber3D.Render.overview` can be used.
 The syntax is very similar to :meth:`Qiber3D.Render.show`, but now a ``out_path`` and the ``image_resolution`` can be set.
 If no ``out_path`` is set the file name is automatically chosen.
-An existing file will not be overwritten if not ``overwrite`` is set to ```True``.
+An existing file will not be overwritten.
+Set ``overwrite`` to ``True`` to change this behaviour.
 
 .. code-block:: python
 
@@ -101,7 +102,7 @@ An existing file will not be overwritten if not ``overwrite`` is set to ```True`
 
 While we requested a red background, it is not visible in the resulting image.
 The reason for this behavior is, that for the background the alpha channel of the :file:`.png` file comes into play.
-If a image without transperency is needed ``rgba`` can be set to ```False``.
+If a image without transperency is needed ``rgba`` can be set to ``False``.
 
 .. code-block:: python
 
@@ -112,7 +113,7 @@ If a image without transperency is needed ``rgba`` can be set to ```False``.
       :width: 50%
       :align: center
 
-The last basic visualization option is to save an animation of the network as a :file:`.mp4` movie.
+The last basic visualization option is to save an animation of the network as a :file:`.mp4` movie. (:file:`.gif` and :file:`.webm` are also possible)
 
 .. code-block:: python
 

@@ -2,6 +2,7 @@
 /Qiber3D.egg-info/
 /dist/
 /build/
+/docs_html/
 /.coverage
 /coverage_html_report/
 x3dom.js

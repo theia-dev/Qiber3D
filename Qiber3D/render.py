@@ -3,6 +3,7 @@ import os
 import shutil
 import string
 import subprocess
+import time
 from functools import partial
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
@@ -16,10 +17,14 @@ from PIL import Image
 from matplotlib import cm
 from scipy import ndimage
 from skimage import filters
-from tqdm import tqdm
 from vtk.util.numpy_support import vtk_to_numpy
 
 from Qiber3D import helper, config
+
+if config.render.notebook:
+    from tqdm.notebook import tqdm
+else:
+    from tqdm import tqdm
 
 
 class Render:
@@ -180,6 +185,7 @@ class Render:
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
         vedo.settings.useParallelProjection = True
         if config.render.notebook:
+            helper.notebook_display_backend()
             tube_text = []
         else:
             tube_text = [vedo.Text2D(self.network.name, c='black')]
@@ -590,10 +596,12 @@ class Render:
 
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
         vedo.settings.useParallelProjection = True
+        helper.notebook_render_backend()
+
         vp = vedo.Plotter(axes=axes, offscreen=True, interactive=False, size=(image_resolution, image_resolution),
                           bg=background)
-        vedo_obj = vp.show(object_list, azimuth=azimuth, roll=roll, elevation=elevation)
 
+        vedo_obj = vp.show(object_list, azimuth=azimuth, roll=roll, elevation=elevation)
         if rgba is None:
             rgba = config.render.rgba
 
@@ -604,6 +612,9 @@ class Render:
         vedo_obj.close()
 
         self.logger.info(f"New overview saved under: {out_path.absolute()}")
+        if config.render.notebook:
+            helper.notebook_display_backend()
+
         return out_path
 
     def animation(self, out_path='.',  overwrite=False, duration=3, fps=30, height=None,
@@ -611,7 +622,7 @@ class Render:
                   object_type=None, segment_list=None, rgba=False, zoom=None):
         """
         Animate a network by rotate the camera around it. Saves as h264 :file:`.mp4` file by default.
-        Supports also file:`.webm` and file:`.gif` as target.
+        Supports also :file:`.webm` and :file:`.gif` as target.
 
         :param out_path: file or folder path where to save the network, if `None` show the plot.
         :type out_path: str, Path
@@ -627,7 +638,7 @@ class Render:
         :param tuple(float) background: background color
         :param str object_type: when set to `'line'` render center line
         :param tuple segment_list: limit the visualisation to certain segment (use sid)
-        :param bool rgba: allow transparency in saved file (for .gif and .webm)
+        :param bool rgba: allow transparency in saved file (for ``.gif`` and ``.webm``)
         :param float zoom: zoom by rendering a larger image and cutting it down afterwards (must be > 1.0)
         :return: path to saved file
         :rtype: Path
@@ -655,8 +666,13 @@ class Render:
         if background is None:
             background = config.render.background
 
+        helper.notebook_render_backend()
         vedo.settings.useParallelProjection = False
+
         width = int(height / 9 * 16)
+        height = int(round(height/2))*2
+        width = int(round(width/2))*2
+        print(height,width)
         if zoom is not None:
             if isinstance(zoom, (float, int)):
                 if zoom < 1.0:
@@ -688,7 +704,7 @@ class Render:
             tmp_dir_path = Path(tmp_dir)
             work_dir = tmp_dir_path / work_base
             work_dir.mkdir(parents=True)
-
+            print(work_dir.absolute())
             frames = int(duration * fps)
 
             self.logger.debug(f'Generating {frames} images under {work_dir.absolute()}')
@@ -700,8 +716,6 @@ class Render:
             for n in work_list:
                 vp.show(azimuth=(360 / frames))
                 self._base_render(image_name=f'ANI_{n:07}.png', work_dir=work_dir, rgba=rgba, cut=cut)
-
-            vp.close()
 
             if out_path.suffix == '.gif':
                 command = [config.render.ffmpeg_path, '-r', str(fps), '-f', "image2", "-i", "ANI_%07d.png",
@@ -730,6 +744,8 @@ class Render:
                 out_path.unlink()
             shutil.move(str(in_path.with_suffix(out_path.suffix).absolute()), str(out_path.absolute()))
             self.logger.info(f"New animation saved under: {out_path.absolute()}")
+            if config.render.notebook:
+                helper.notebook_display_backend()
 
     @classmethod
     def _base_render(cls, image_name=None, work_dir=None, cut_to_fit=False, rgba=False, cut=None):

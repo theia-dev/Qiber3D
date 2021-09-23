@@ -36,7 +36,7 @@ class render:
     color = (0.9, 0.2, 0.2)
     """tuple(floats): standard foreground color"""
     notebook = False
-    """bool: switch to adapt render pipeline for jupyter notebooks"""
+    """bool: switch to adapt render pipeline for jupyter notebooks (automatically set)"""
 
 
 # settings for figure

@@ -3,7 +3,8 @@ Welcome to Qiber3D's documentation!
 
 *Automated quantification of fibrous networks*
 
-``Qiber3D`` is an open software toolkit for analysing fibrous networks in 3D.
+:mod:`Qiber3D` is an open software toolkit for analysing fibrous networks in 3D.
+This documentation is for version |release|.
 
 .. x3d:: "_static/x3d/synthetic_show_segment.x3d"
 

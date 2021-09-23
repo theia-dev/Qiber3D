@@ -1,6 +1,16 @@
 Setup
 -----
 
+Binder
+======
+
+You can test :mod:`Qiber3D` without installing a Python environment on your computer.
+This is possible through the `binder service <https://mybinder.org>`_, allowing us to start a fully set up `JupyterLab <https://jupyter.org/>`_ in your browser.
+It is important to note that the provided environments do not have enough memory to work with full resolution image stacks.
+The included examples should still be helpful to start with :mod:`Qiber3D`.
+
+`To start the JupyterLab click here! <https://mybinder.org/v2/gh/theia-dev/Qiber3D_jupyter/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Ftheia-dev%252FQiber3D%26urlpath%3Dtree%252FQiber3D%252Fdocs%252Fjupyter%252Findex.ipynb%26branch%3Ddev>`_
+
 Library
 =======
 
@@ -12,7 +22,7 @@ The use of a `virtual environment <https://docs.python.org/3/tutorial/venv.html>
    $ pip install Qiber3D
 
 
-If the stable version of Qiber3D on PyPI is missing a particular function, you can install the latest development version directly from the GitHub repository.
+If the stable version of Qiber3D on PyPI is missing a particular function, you can install the latest version directly from the GitHub repository.
 
 .. code-block:: shell-session
 

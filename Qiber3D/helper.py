@@ -8,7 +8,7 @@ import json
 import tarfile
 from io import BytesIO
 from Qiber3D import config
-
+import vedo
 
 class LookUp:
     def __init__(self, *arg, **kw):
@@ -317,15 +317,37 @@ def change_log_level(log_level, name='Qiber3D'):
     return log_level
 
 
-def prepare_notebook():
-    import vedo
+def check_notebook():
+
+    try:
+        shell = get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            config.render.notebook = True  # Jupyter notebook or qtconsole
+        elif shell == 'TerminalInteractiveShell':
+            config.render.notebook = False  # Terminal running IPython
+        else:
+            config.render.notebook = False  # Other type (?)
+    except NameError:
+        config.render.notebook = False  # Probably standard Python interpreter
+
     try:
         import k3d
+        notebook_display_backend()
     except ImportError:
-        print('prepare_notebook: k3d module could not be found')
-    vedo.settings.notebookBackend = 'k3d'
-    vedo.settings.backend = 'k3d'
-    config.render.notebook = True
+        print('Could not load k3d. Interactive display is not possible in this notebook.')
+        config.render.notebook = False
+
+
+def notebook_display_backend():
+    if config.render.notebook:
+        vedo.settings.notebookBackend = 'k3d'
+        vedo.settings.backend = 'k3d'
+
+
+def notebook_render_backend():
+    if config.render.notebook:
+        vedo.settings.notebookBackend = None
+        vedo.settings.backend = None
 
 
 def config_logger(name='Qiber3D'):
