@@ -5,11 +5,23 @@ To load the network simply pass its path to :meth:`Qiber3D.Network.load`.
 Based on the file suffix the corresponding part of :class:`Qiber3D.IO.load` is used.
 
 
+
+.. note:: To follow the examples presented here please download the coresponding image stacks from figshare under
+          doi:`10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
+
+          * :file:`microvascular_network.nd2` - FigID: 26211077 (1.06 GB)
+          * :file:`microvascular_network.tif` - FigID: 30771817 (1.06 GB)
+          * :file:`microvascular_network-C2.tif` - FigID: 30771877 (362 MB)
+          * :file:`microvascular_network-C2-reduced.tif` - FigID: 0000000 (40MB)
+
+.. note:: To directly download the files on the commandline ``curl`` can be used.
+          Just replace ``$(FigID)`` with the number from the list above.
+
+          ``curl -X GET "https://api.figshare.com/v2/file/download/$(FigID)"``
+
+
 ND2 example
 ^^^^^^^^^^^
-.. note:: To follow this example you can download the image stack from figshare under
-          doi:`10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
-          To directly download the ND2 file on the commandline curl can be used ``curl -X GET "https://api.figshare.com/v2/file/download/26211077"``.
 
 .. code-block:: python
 
@@ -20,29 +32,33 @@ ND2 example
     >>> config.log_level = logging.DEBUG
     >>> net = Network.load('microvascular_network.nd2')
     Qiber3D_extract [INFO] Load image data from microvascular_network.nd2
+    Qiber3D_extract [INFO] Image voxel size: [1.230,1.230,2.500]
     Qiber3D_extract [INFO] Median Filter (despeckle)
     Qiber3D_extract [INFO] Z-Drop correction
     Qiber3D_extract [INFO] Resample image to cubic voxels
     Qiber3D_extract [INFO] Apply gaussian filter
     Qiber3D_extract [INFO] Generate binary representation
+    Qiber3D_extract [INFO] Binary representation used a threshold of 10.0% (otsu)
     Qiber3D_extract [INFO] Morph binary representation
     Qiber3D_extract [INFO] reconstruct image
     Qiber3D_reconstruct [INFO] Skeletonize image by thinning
     Qiber3D_reconstruct [INFO] Euclidean distance transformation
     Qiber3D_reconstruct [INFO] Link up skeleton
-    Qiber3D_reconstruct [INFO] Build Qiber3D.Network for the raw graph
+    Qiber3D_reconstruct [INFO] Build Qiber3D.Network from the raw graph
     Qiber3D_reconstruct [INFO] Cleaning Network
     Qiber3D_reconstruct [INFO] Smooth Segments
     >>> print(net)
     Input file: microvascular_network.nd2
-      Number of fibers: 459 (clustered 97)
-      Number of segments: 660
-      Number of branch points: 130
-      Total length: 16056.46
-      Total volume: 1240236.70
-      Average radius: 4.990
-      Cylinder radius: 4.959
-      Bounding box volume: 681182790
+      Input file: microvascular_network.nd2
+      Number of fibers: 770 (clustered 94)
+      Number of segments: 956
+      Number of branch points: 122
+      Total length: 19104.36
+      Total volume: 1458702.15
+      Average radius: 4.857
+      Cylinder radius: 4.930
+      Bounding box volume: 682426318
+
 
 A reconstructed network can quickly be saved with :meth:`Qiber3D.Network.save`.
 Without arguments, just the reconstructed network is saved.
@@ -63,9 +79,10 @@ The created :file:`.qiber` can be loaded as any other supported file type.
 
 TIFF example
 ^^^^^^^^^^^^
-.. note:: To follow this example you can download the image stack from figshare under
-          doi:`10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
-          To directly download the TIFF file on the commandline curl can be used ``curl -X GET "https://api.figshare.com/v2/file/download/30771817"``.
+
+The same example can be run using a `.tif` version of the same data.
+
+.. note:: While the reduced dataset is the same subject, the reduced resolution and greyscale range will result in altered results.
 
 
 .. code-block:: python
@@ -74,6 +91,7 @@ TIFF example
     >>> from Qiber3D import Network, config, helper
     >>> helper.change_log_level(logging.DEBUG)
     >>> config.log_level = logging.DEBUG
+    >>> config.extract.voxel_size = [1.2302, 1.2302, 2.5]
     >>> net = Network.load('microvascular_network.tif', channel=2)
     Qiber3D_extract [INFO] Load image data from microvascular_network.tif
     Qiber3D_extract [INFO] Median Filter (despeckle)

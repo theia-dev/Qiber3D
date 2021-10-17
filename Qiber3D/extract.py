@@ -160,6 +160,7 @@ class Extractor:
             self.z_spacing = self.voxel_size[2]
             self.xy_spacing = self.voxel_size[0]
         # scale all images from 0 to 1 and store it at the selected resolution
+        self.logger.info(f'Image voxel size: [{self.xy_spacing:.3f},{self.xy_spacing:.3f},{self.z_spacing:.3f}]')
         raw_image = np.zeros((self.shape[2], self.shape[0], self.shape[1]), dtype=self.dtype)
         raw_image[:] = (images - np.min(images))/(np.max(images)-np.min(images))
         if self.config.extract.invert:
@@ -210,7 +211,8 @@ class Extractor:
             self.__show_step('Gaussian filter', spacing=[self.xy_spacing] * 3)
 
         self.logger.info('Generate binary representation')
-        self.image_stack = self.binary_representation(self.image_stack)
+        self.image_stack, used_threshold, requested_threshold = self.binary_representation(self.image_stack)
+        self.logger.info(f'Binary representation used a threshold of {used_threshold:.1f}% ({requested_threshold})')
         self.__show_step('Binary representation', binary=True, spacing=[self.xy_spacing] * 3)
 
         if self.config.extract.morph.apply:
@@ -343,27 +345,32 @@ class Extractor:
     def binary_representation(image, threshold=None):
         if threshold is None:
             threshold = config.extract.binary.threshold
-        print(threshold)
         if threshold is None:
             threshold = 'otsu'
-        elif type(threshold) == str:
+
+        if type(threshold) == str:
             threshold = threshold.lower().strip()
             if threshold == 'otsu':
-                threshold = filters.threshold_otsu(image)
+                applied_threshold = filters.threshold_otsu(image)
+            elif threshold == 'li':
+                applied_threshold = filters.threshold_li(image)
             elif threshold == 'isodata':
-                threshold = filters.threshold_isodata(image)
+                applied_threshold = filters.threshold_isodata(image)
             elif threshold == 'mean':
-                threshold = filters.threshold_mean(image)
+                applied_threshold = filters.threshold_mean(image)
             elif threshold == 'minimum':
-                threshold = filters.threshold_minimum(image)
+                applied_threshold = filters.threshold_minimum(image)
             elif threshold == 'triangle':
-                threshold = filters.threshold_triangle(image)
+                applied_threshold = filters.threshold_triangle(image)
             elif threshold == 'yen':
-                threshold = filters.threshold_yen(image)
+                applied_threshold = filters.threshold_yen(image)
+            else:
+                applied_threshold = filters.threshold_otsu(image)
+                threshold = f"could not find {threshold} using otsu"
         else:
-            threshold = threshold / 100 * np.max(image)
-        print(threshold)
-        return image >= threshold
+            applied_threshold = threshold / 100 * np.max(image)
+            threshold = f"direct"
+        return image >= applied_threshold, (applied_threshold/np.max(image))*100, threshold
 
     @staticmethod
     def _z_drop_func(x, a, b):

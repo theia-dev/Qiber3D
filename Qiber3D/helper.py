@@ -1,14 +1,18 @@
+import json
 import logging
+import tarfile
 import warnings
+from io import BytesIO
 from pathlib import Path
 from sys import getsizeof
+from urllib import request
+
 import blosc as minimizer
 import numpy as np
-import json
-import tarfile
-from io import BytesIO
-from Qiber3D import config
 import vedo
+
+from Qiber3D import config
+
 
 class LookUp:
     def __init__(self, *arg, **kw):
@@ -277,6 +281,65 @@ class NumpyMemoryManager:
                     sum([entry['compressed_size'] for entry in self.meta.values()]))
         else:
             return 1.0
+
+
+class Example:
+    endpoint = 'https://api.figshare.com/v2/file/download/'
+    ex_list = {'microvascular_network.nd2': '26211077',
+               'microvascular_network.tif': '30771817',
+               'microvascular_network-C2.tif': '30771877',
+               'microvascular_network-C2-reduced.tif': '31106104'}
+
+    @classmethod
+    def load_example(cls, ex_name):
+        """
+        Download examples files from `figshare <https://doi.org/10.6084/m9.figshare.13655606>`_.
+
+        :param ex_name: name of the example (see :attr:`Example.ex_list`)
+        :type ex_name: str
+        :return: Path
+        """
+        ex_path = Path(ex_name)
+        if not ex_path.is_file():
+            req = request.Request(cls.endpoint + cls.ex_list[ex_name])
+            ex_path.write_bytes(request.urlopen(req).read())
+        return ex_path
+
+    @classmethod
+    def nd2(cls):
+        """
+        Short form of :meth:`Example.load_example` called with :file:`microvascular_network.nd2`
+
+        :return: Path
+        """
+        return cls.load_example('microvascular_network.nd2')
+
+    @classmethod
+    def tiff(cls):
+        """
+        Short form of :meth:`Example.load_example` called with :file:`microvascular_network.tif`
+
+        :return: Path
+        """
+        return cls.load_example('microvascular_network.tif')
+
+    @classmethod
+    def tiff_c2(cls):
+        """
+        Short form of :meth:`Example.load_example` called with :file:`microvascular_network-C2.tif`
+
+        :return: Path
+        """
+        return cls.load_example('microvascular_network-C2.tif')
+
+    @classmethod
+    def tiff_c2_red(cls):
+        """
+        Short form of :meth:`Example.load_example` called with :file:`microvascular_network-C2-reduced.tif`
+
+        :return: Path
+        """
+        return cls.load_example('microvascular_network-C2-reduced.tif')
 
 
 def out_path_check(out_path, prefix, suffix, network=None, overwrite=False, logger=None):

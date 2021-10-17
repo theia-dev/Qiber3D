@@ -440,14 +440,14 @@ class IO:
             Export a :class:`Qiber3D.Network` to file. Selecting the appropriate format based on the file suffix.
 
             Supports: :file:`.qiber`, :file:`.json`, :file:`.mv3d`, :file:`.tif`, :file:`.nd2`, :file:`.swc`,
-            :file:`.csv`,  :file:`.tsv`, :file:`.xlsx`, :file:`.static`
+            :file:`.csv`,  :file:`.tsv`, :file:`.xlsx`, :file:`.x3d`
 
             :param Qiber3D.Network net: network to export
             :param out_path: file or folder path where to save the network
             :type out_path: str, Path
             :param bool overwrite: allow file overwrite
             :param str mode: select the file format ignoring the file suffix.
-                Choose from ['binary', 'json', 'mv3d', 'static', 'swc', 'xlsx', 'csv', 'tsv', 'tif']
+                Choose from ['binary', 'json', 'mv3d', 'x3d', 'swc', 'xlsx', 'csv', 'tsv', 'tif']
             :param kwargs: key-word arguments are passed down to the individual IO functions
             :return: path to saved file
             :rtype: Path
@@ -460,8 +460,8 @@ class IO:
                     mode = 'binary'
                 elif path.suffix == '.mv3d':
                     mode = 'mv3d'
-                elif path.suffix == '.static':
-                    mode = 'static'
+                elif path.suffix == '.x3d':
+                    mode = 'x3d'
                 elif path.suffix == '.swc':
                     mode = 'swc'
                 elif path.suffix == '.xlsx':
@@ -483,7 +483,7 @@ class IO:
                 return cls.mv3d(net, out_path=out_path, overwrite=overwrite)
             elif mode == 'swc':
                 return cls.swc(net, out_path=out_path, overwrite=overwrite, **kwargs)
-            elif mode == 'static':
+            elif mode == 'x3d':
                 return cls.x3d(net, out_path=out_path, overwrite=overwrite, **kwargs)
             elif mode == 'xlsx':
                 return cls.xlsx(net, out_path=out_path, overwrite=overwrite)
@@ -867,7 +867,7 @@ class IO:
                 color_mode='flat', color_map='jet', color=None, object_type=None, segment_list=None,
                 azimuth=None, elevation=None, roll=None):
             """
-            Export :class:`Qiber3D.Network` as :file:`.static` file.
+            Export :class:`Qiber3D.Network` as :file:`.x3d` file.
 
             :param Qiber3D.Network net: network to export
             :param out_path: file or folder path where to save the network

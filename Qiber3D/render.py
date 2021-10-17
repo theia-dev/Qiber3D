@@ -369,7 +369,7 @@ class Render:
                            title='threshold', showValue=True, )
             window = vp.show((iso_surface, vol_text))
         window.close()
-        vedo.closePlotter()
+        #vedo.closePlotter()
 
     @classmethod
     def save_3d_image(cls, image, out_path='.', overwrite=False, image_resolution=None, binary=False,
@@ -410,6 +410,7 @@ class Render:
         if rgba is None:
             rgba = config.render.rgba
 
+        helper.notebook_render_backend()
         vedo.settings.useParallelProjection = False
         vol = vedo.Volume(image, spacing=spacing)
         if binary:
@@ -430,6 +431,8 @@ class Render:
             out_path.unlink()
         cls._base_render(image_name=out_path.name, work_dir=out_path.parent, cut_to_fit=True, rgba=rgba)
         vedo_obj.close()
+        if config.render.notebook:
+            helper.notebook_display_backend()
         return out_path
 
     def export_x3d(self, out_path='.', overwrite=False,
@@ -504,7 +507,7 @@ class Render:
                     metadata={'spacing': voxel_resolution, 'unit': 'um', 'axes': 'ZYX'})
         return out_path
 
-    def export_intensity_projection(self, out_path='.', overwrite=False,
+    def export_intensity_projection(self, image=None, out_path='.', overwrite=False, color_map='bone',
                                     mode='max', axis='z', voxel_resolution=None, segment_list=None):
         """
         Create a intensity projection of the rasterized network.
@@ -521,18 +524,20 @@ class Render:
         """
 
         prefix = f'max_intensity_{axis}_'
-        out_path, needs_unlink = helper.out_path_check(out_path, network=self.network, prefix=prefix, suffix='.tif',
+        out_path, needs_unlink = helper.out_path_check(out_path, network=self.network, prefix=prefix, suffix='.png',
                                                        overwrite=overwrite, logger=self.logger)
         if out_path is None:
             return
-
-        if voxel_resolution is None:
-            image = self.raster
-            voxel_resolution = self.raster_resolution
+        if image is None:
+            raster = True
+            if voxel_resolution is None:
+                image = self.raster
+                voxel_resolution = self.raster_resolution
+            else:
+                self.logger.info(f'Rasterizing network (voxel resolution : {voxel_resolution:.2E} voxel/unit)')
+                image = self._rasterize_network(self.network, resolution=voxel_resolution, segment_list=segment_list)
         else:
-            self.logger.info(f'Rasterizing network (voxel resolution : {voxel_resolution:.2E} voxel/unit)')
-            image = self._rasterize_network(self.network, resolution=voxel_resolution, segment_list=segment_list)
-
+            raster = False
         if axis not in (0, 1, 2):
             if axis == 'x':
                 axis = 0
@@ -549,11 +554,21 @@ class Render:
         else:
             self.logger.warning(f'Mode {mode} not supported.')
             return None
-        image = np.transpose(image, (1, 0))
-        tif.imsave(str(out_path.absolute()), (image * 255).astype(np.uint8), compression='DEFLATE')
-        tif.imsave(str(out_path.absolute()), (image * 255).astype(np.uint8), compression='DEFLATE',
-                   resolution=(voxel_resolution, voxel_resolution, None),
-                   metadata={'unit': 'um', 'axes': 'YX'})
+        # image = np.transpose(image, (1, 0))
+        image = image.astype(float)
+        cmp = cm.get_cmap(color_map)
+        image = (image - np.min(image)) / (np.max(image) - np.min(image))
+        image = cmp(image)
+        image = (image*255).astype(np.uint8)
+        Image.fromarray(image, "RGBA").save(out_path.absolute())
+
+        #     return image_name
+        #     tif.imsave(str(out_path.absolute()), (image * 255).astype(np.uint8), compression='DEFLATE',
+        #                resolution=(voxel_resolution, voxel_resolution, None),
+        #                metadata={'unit': 'um', 'axes': 'YX'})
+        # else:
+        #     tif.imsave(str(out_path.absolute()), (image * 255).astype(np.uint8), compression='DEFLATE')
+
         return out_path
 
     def overview(self, out_path='.', overwrite=False, image_resolution=None,
@@ -672,7 +687,7 @@ class Render:
         width = int(height / 9 * 16)
         height = int(round(height/2))*2
         width = int(round(width/2))*2
-        print(height,width)
+
         if zoom is not None:
             if isinstance(zoom, (float, int)):
                 if zoom < 1.0:
@@ -704,7 +719,6 @@ class Render:
             tmp_dir_path = Path(tmp_dir)
             work_dir = tmp_dir_path / work_base
             work_dir.mkdir(parents=True)
-            print(work_dir.absolute())
             frames = int(duration * fps)
 
             self.logger.debug(f'Generating {frames} images under {work_dir.absolute()}')
@@ -746,6 +760,7 @@ class Render:
             self.logger.info(f"New animation saved under: {out_path.absolute()}")
             if config.render.notebook:
                 helper.notebook_display_backend()
+        return out_path
 
     @classmethod
     def _base_render(cls, image_name=None, work_dir=None, cut_to_fit=False, rgba=False, cut=None):

@@ -12,3 +12,7 @@ helper
 .. autoclass:: Qiber3D.helper.PointLookUp
    :members:
    :show-inheritance:
+
+.. autoclass:: Qiber3D.helper.Example
+   :members:
+   :show-inheritance:
