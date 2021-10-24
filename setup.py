@@ -19,6 +19,9 @@ setup(name=config.app_name,
       long_description_content_type='text/markdown',
       url=config.url,
       download_url=f'https://github.com/theia-dev/Qiber3D/archive/v{version}.zip',
+      project_urls={"Binder": "https://mybinder.org/v2/gh/theia-dev/Qiber3D_jupyter/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Ftheia-dev%252FQiber3D%26urlpath%3Dtree%252FQiber3D%252Fdocs%252Fjupyter%252Findex.ipynb",
+                    "Documentation": "https://qiber3d.readthedocs.io/"
+                    },
       author=config.app_author,
       author_email='',
       license='MIT',
@@ -35,7 +38,7 @@ setup(name=config.app_name,
                 'Vessel', 'Vascular', 'confocal', 'microscopy'],
       python_requires='~=3.7',
       classifiers=[
-          'Development Status :: 2 - Pre-Alpha',
+          'Development Status :: 4 - Beta',
 
           'Intended Audience :: Science/Research',
           'Topic :: Scientific/Engineering :: Bio-Informatics',

@@ -3,7 +3,7 @@ import logging
 
 app_name = 'Qiber3D'
 """Name of the app"""
-version_number = (0, 6, 0)
+version_number = (0, 7, 0)
 """tuple(int): version number"""
 version = f'{version_number[0]}.{version_number[1]}.{version_number[2]}'
 """str: version"""
@@ -70,7 +70,7 @@ class extract:
     """bool: invert the input image (extracted structures should be high and background low)"""
     use_teasar = False
     """bool: if ``True`` use the `kimimaro <https://github.com/seung-lab/kimimaro>`_ 
-    TEASAR implementation for recunstruction"""
+    TEASAR implementation for reconstruction"""
 
     class z_drop:
         """Z-Drop - Intensity attenuation correction"""

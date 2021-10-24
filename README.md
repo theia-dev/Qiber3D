@@ -12,28 +12,35 @@ Automated quantification of fibrous networks
 [![Coverage](https://img.shields.io/codecov/c/gh/theia-dev/Qiber3D?token=UCNHVP172J&style=for-the-badge)](https://app.codecov.io/gh/theia-dev/Qiber3D)
 [![Build](https://img.shields.io/github/workflow/status/theia-dev/Qiber3D/Qiber3D.svg?style=for-the-badge)](https://github.com/theia-dev/Qiber3D/actions/workflows/test-Qiber3D.yml)
 
+[![Binder](https://img.shields.io/badge/BINDER-Latest-brightgreen?style=for-the-badge)](https://mybinder.org/v2/gh/theia-dev/Qiber3D_jupyter/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Ftheia-dev%252FQiber3D%26urlpath%3Dtree%252FQiber3D%252Fdocs%252Fjupyter%252Findex.ipynb)
+[![Binder](https://img.shields.io/badge/BINDER-Dev-blue?style=for-the-badge)](https://mybinder.org/v2/gh/theia-dev/Qiber3D_jupyter/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Ftheia-dev%252FQiber3D%26urlpath%3Dtree%252FQiber3D%252Fdocs%252Fjupyter%252Findex.ipynb%26branch%3Ddev)
 
 ## Setup
     pip install Qiber3D
     
-You can also install the latest version directly from GitHub.
+You can install the _latest_ version
 
     pip install -U git+https://github.com/theia-dev/Qiber3D.git#egg=Qiber3D
 
+or the _dev_ version directly from GitHub.
     
-## Usage
+    pip install -U git+https://github.com/theia-dev/Qiber3D.git@dev#egg=Qiber3D
 
-An image stack, or a preprocessed network can be loaded with ``Network.load()``
-To follow this example you can download the image stack from figshare under [doi:10.6084/m9.figshare.13655606](https://doi.org/10.6084/m9.figshare.13655606).
+    
+## Quick usage
 
+An image stack or a preprocessed network can be loaded with ``Network.load()``
+To follow this example, you can download the image stack from figshare under [doi:10.6084/m9.figshare.13655606](https://doi.org/10.6084/m9.figshare.13655606) or use the `Example` class.
 ```python
 import logging
-from Qiber3D import Network, config, helper
+from Qiber3D import Network, config
+from Qiber3D.helper import Example, change_log_level
 
 config.extract.nd2_channel_name = 'FITC'
-helper.change_log_level(logging.DEBUG)
+change_log_level(logging.DEBUG)
 
-net = Network.load('microvascular_network.nd2')
+net_ex = Example.nd2()
+net = Network.load(net_ex)
 print(net)
 # Input file: microvascular_network.nd2
 #   Number of fibers: 459 (clustered 97)
@@ -52,46 +59,9 @@ net.render.show()
 net.render.compare()
 ```
 
-A quick way to explore the possibilities of ``Qiber3D`` is the use of the synthetic network.
-```python
-from Qiber3D import IO
-net = IO.load.synthetic_network()
-print(net)
-# Input file: memory
-#   Number of fibers: 4 (clustered 2)
-#   Number of segments: 11
-#   Number of branch points: 5
-#   Total length: 1141.44
-#   Total volume: 4688.67
-#   Average radius: 0.936
-#   Cylinder radius: 1.143
-#   Bounding box volume: 806162
-net.length
-# 1141.437678088988
-net.volume
-# 4688.667104530579
-net.fiber[0]
-# Fiber 0 l=451.65, V=1651.71
-print(net.fiber[0])
-# Fiber ID: 0
-#   Number of segments: 5
-#   Total length: 451.65
-#   Total volume: 1651.71
-#   Average radius: 0.86
-#   Cylinder radius: 1.08
-net.fiber[0].segment
-# {0: Segment 0 l=40.19, V=17.30, 1: Segment 1 l=124.71, V=113.51, 2: Segment 2 l=32.72, V=112.79, 
-#  3: Segment 3 l=154.15, V=1080.55, 4: Segment 4 l=99.88, V=327.56}
-print(net.segment[1])
-# Segment ID: 1
-#   Number of parts: 200
-#   Total length: 124.71
-#   Total volume: 113.51
-#   Average radius: 0.51
-#   Cylinder radius: 0.54
-net.render.show()
-net.render.show(color_mode='segment', color_map='hsv')
-net.figure.directions(out_path=None)
-```
+A more extensive interactive example is available as a Jupyter notebook.
+You can try it out directly on [Binder](https://mybinder.org/v2/gh/theia-dev/Qiber3D_jupyter/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Ftheia-dev%252FQiber3D%26urlpath%3Dtree%252FQiber3D%252Fdocs%252Fjupyter%252Findex.ipynb).
+More in-depth documentation, including details on the inner working, can be found at [Read the docs](https://Qiber3D.readthedocs.io).
 
-The full source code can be accessed on [GitHub](https://github.com/theia-dev/Qiber3D) with the corresponding documentation hosted at [Read the docs](https://Qiber3D.readthedocs.io).
+
+The complete source code is available on [GitHub](https://github.com/theia-dev/Qiber3D).

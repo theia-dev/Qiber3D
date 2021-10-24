@@ -1,4 +1,7 @@
 .idea
+__pycache__/
+*.pyc
+*.pyo
 Qiber3D.egg-info/
 dist/
 build/
@@ -7,7 +10,6 @@ docs_html/
 coverage_html_report/
 x3dom.js
 x3dom.css
-docs/jupyter/*.mp4
-docs/jupyter/*.png
-docs/jupyter/.ipynb_checkpoints/
-.pytest_cache/
+docs/jupyter/*
+!docs/jupyter/*.ipynb
+synthetic.tif

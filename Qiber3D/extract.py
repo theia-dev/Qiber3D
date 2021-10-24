@@ -135,6 +135,7 @@ class Extractor:
             Qiber3D.Render.show_3d_image(self.image_stack, name, binary=binary, spacing=spacing)
 
     def __read_raw_image(self):
+        images_selected = None
         if self.input_path.suffix == '.nd2':
             images = ND2Reader(str(self.input_path.absolute()))
             self.shape[:2] = images.frame_shape
@@ -154,17 +155,31 @@ class Extractor:
             self.xy_spacing = images.metadata['pixel_microns']
         else:
             images = pims.open(str(self.input_path.absolute()))
-            self.shape[:2] = images.frame_shape
-            self.shape[2] = len(images)
+            if hasattr(images, '_tiff') and self.channel is not None:
+
+                self.shape[:2] = images.frame_shape
+                self.shape[2] = images._tiff.shape[0]
+                if len(images._tiff.shape) == 4:
+                    images_selected = images[self.channel::images._tiff.shape[1]]
+                else:
+                    images_selected = images
+
+            else:
+                self.shape[:2] = images.frame_shape
+                self.shape[2] = len(images)
             for n in range(3):
                 self.positions[n] = np.linspace(0, self.voxel_size[n]*self.shape[n],
                                                 num=self.shape[n], endpoint=False)
             self.z_spacing = self.voxel_size[2]
             self.xy_spacing = self.voxel_size[0]
+
         # scale all images from 0 to 1 and store it at the selected resolution
         self.logger.info(f'Image voxel size: [{self.xy_spacing:.3f},{self.xy_spacing:.3f},{self.z_spacing:.3f}]')
         raw_image = np.zeros((self.shape[2], self.shape[0], self.shape[1]), dtype=self.dtype)
-        raw_image[:] = (images - np.min(images))/(np.max(images)-np.min(images))
+        if images_selected:
+            raw_image[:] = (images_selected - np.min(images_selected)) / (np.max(images_selected) - np.min(images_selected))
+        else:
+            raw_image[:] = (images - np.min(images))/(np.max(images)-np.min(images))
         if self.config.extract.invert:
             raw_image = 1.0 - raw_image
         images.close()

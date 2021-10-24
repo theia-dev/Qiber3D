@@ -393,12 +393,13 @@ def check_notebook():
     except NameError:
         config.render.notebook = False  # Probably standard Python interpreter
 
-    try:
-        import k3d
-        notebook_display_backend()
-    except ImportError:
-        print('Could not load k3d. Interactive display is not possible in this notebook.')
-        config.render.notebook = False
+    if config.render.notebook:
+        try:
+            import k3d
+            notebook_display_backend()
+        except ImportError:
+            print('Could not load k3d. Interactive display is not possible in this notebook.')
+            config.render.notebook = False
 
 
 def notebook_display_backend():

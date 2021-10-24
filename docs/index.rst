@@ -8,6 +8,7 @@ This documentation is for version |release|.
 
 .. x3d:: "_static/x3d/synthetic_show_segment.x3d"
 
+
 .. toctree::
    :maxdepth: 4
 

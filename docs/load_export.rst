@@ -4,15 +4,14 @@ A :class:`Qiber3D.Network` can either be created from from an image stack, or an
 To load the network simply pass its path to :meth:`Qiber3D.Network.load`.
 Based on the file suffix the corresponding part of :class:`Qiber3D.IO.load` is used.
 
-
-
-.. note:: To follow the examples presented here please download the coresponding image stacks from figshare under
+.. note:: The examples presented here use the corresponding image stacks from figshare
           doi:`10.6084/m9.figshare.13655606 <https://doi.org/10.6084/m9.figshare.13655606>`_.
+          The :class:`Qiber3D.helper.Example` class can be used to download the data easily.
 
           * :file:`microvascular_network.nd2` - FigID: 26211077 (1.06 GB)
           * :file:`microvascular_network.tif` - FigID: 30771817 (1.06 GB)
           * :file:`microvascular_network-C2.tif` - FigID: 30771877 (362 MB)
-          * :file:`microvascular_network-C2-reduced.tif` - FigID: 0000000 (40MB)
+          * :file:`microvascular_network-C2-reduced.tif` - FigID: 31106104 (40MB)
 
 .. note:: To directly download the files on the commandline ``curl`` can be used.
           Just replace ``$(FigID)`` with the number from the list above.
@@ -26,11 +25,12 @@ ND2 example
 .. code-block:: python
 
     >>> import logging
-    >>> from Qiber3D import Network, config, helper
-    >>> helper.change_log_level(logging.DEBUG)
+    >>> from Qiber3D import Network, config
+    >>> from Qiber3D.helper import Example, change_log_level
+    >>> config.log_level = change_log_level(logging.DEBUG)  # This will show 3D renderings of the intermediate steps
     >>> config.extract.nd2_channel_name = 'FITC'
-    >>> config.log_level = logging.DEBUG
-    >>> net = Network.load('microvascular_network.nd2')
+    >>> net_ex = Example.nd2()
+    >>> net = Network.load(net_ex)
     Qiber3D_extract [INFO] Load image data from microvascular_network.nd2
     Qiber3D_extract [INFO] Image voxel size: [1.230,1.230,2.500]
     Qiber3D_extract [INFO] Median Filter (despeckle)
@@ -38,26 +38,26 @@ ND2 example
     Qiber3D_extract [INFO] Resample image to cubic voxels
     Qiber3D_extract [INFO] Apply gaussian filter
     Qiber3D_extract [INFO] Generate binary representation
-    Qiber3D_extract [INFO] Binary representation used a threshold of 10.0% (otsu)
+    Qiber3D_extract [INFO] Binary representation used a threshold of 4.9% (otsu)
     Qiber3D_extract [INFO] Morph binary representation
     Qiber3D_extract [INFO] reconstruct image
     Qiber3D_reconstruct [INFO] Skeletonize image by thinning
     Qiber3D_reconstruct [INFO] Euclidean distance transformation
-    Qiber3D_reconstruct [INFO] Link up skeleton
+    Link up skeleton: 100%|██████████| 13/13 [00:15<00:00,  1.17s/it]
     Qiber3D_reconstruct [INFO] Build Qiber3D.Network from the raw graph
     Qiber3D_reconstruct [INFO] Cleaning Network
     Qiber3D_reconstruct [INFO] Smooth Segments
     >>> print(net)
     Input file: microvascular_network.nd2
-      Input file: microvascular_network.nd2
-      Number of fibers: 770 (clustered 94)
-      Number of segments: 956
-      Number of branch points: 122
-      Total length: 19104.36
-      Total volume: 1458702.15
-      Average radius: 4.857
-      Cylinder radius: 4.930
-      Bounding box volume: 682426318
+      Number of fibers: 405 (clustered 109)
+      Number of segments: 966
+      Number of branch points: 327
+      Total length: 43192.45
+      Total volume: 5146410.65
+      Average radius: 5.770
+      Cylinder radius: 6.158
+      Bounding box volume: 683663872
+
 
 
 A reconstructed network can quickly be saved with :meth:`Qiber3D.Network.save`.
@@ -68,13 +68,13 @@ Saving the reconstruction steps can consume a lot of space.
 .. code-block:: python
 
     >>> net.save(save_steps=True)
-    Qiber3D_core [INFO] Network saved to Exp190309_PrMECs-NPF180_gel4_ROI-c.qiber
+    Qiber3D_core [INFO] Network saved to microvascular_network.qiber
 
 The created :file:`.qiber` can be loaded as any other supported file type.
 
 .. code-block:: python
 
-    >>> net = Network.load('Exp190309_PrMECs-NPF180_gel4_ROI-c.qiber')
+    >>> net = Network.load('microvascular_network.qiber')
 
 
 TIFF example
@@ -87,36 +87,37 @@ The same example can be run using a `.tif` version of the same data.
 
 .. code-block:: python
 
-    >>> import logging
-    >>> from Qiber3D import Network, config, helper
-    >>> helper.change_log_level(logging.DEBUG)
-    >>> config.log_level = logging.DEBUG
+    >>> from Qiber3D import Network, config
+    >>> from Qiber3D.helper import Example
     >>> config.extract.voxel_size = [1.2302, 1.2302, 2.5]
-    >>> net = Network.load('microvascular_network.tif', channel=2)
+    >>> config.extract.low_memory = True
+    >>> net_ex = Example.tiff()
+    >>> net = Network.load(net_ex, channel=1)
     Qiber3D_extract [INFO] Load image data from microvascular_network.tif
+    Qiber3D_extract [INFO] Image voxel size: [1.230,1.230,2.500]
     Qiber3D_extract [INFO] Median Filter (despeckle)
     Qiber3D_extract [INFO] Z-Drop correction
     Qiber3D_extract [INFO] Resample image to cubic voxels
     Qiber3D_extract [INFO] Apply gaussian filter
     Qiber3D_extract [INFO] Generate binary representation
+    Qiber3D_extract [INFO] Binary representation used a threshold of 4.9% (otsu)
     Qiber3D_extract [INFO] Morph binary representation
     Qiber3D_extract [INFO] reconstruct image
     Qiber3D_reconstruct [INFO] Skeletonize image by thinning
     Qiber3D_reconstruct [INFO] Euclidean distance transformation
-    Qiber3D_reconstruct [INFO] Link up skeleton
-    Qiber3D_reconstruct [INFO] Build Qiber3D.Network for the raw graph
+    Qiber3D_reconstruct [INFO] Build Qiber3D.Network from the raw graph
     Qiber3D_reconstruct [INFO] Cleaning Network
     Qiber3D_reconstruct [INFO] Smooth Segments
     >>> print(net)
-    Input file: microvascular_network.nd2
-      Number of fibers: 459 (clustered 97)
-      Number of segments: 660
-      Number of branch points: 130
-      Total length: 16056.46
-      Total volume: 1240236.70
-      Average radius: 4.990
-      Cylinder radius: 4.959
-      Bounding box volume: 681182790
+    Input file: microvascular_network.tif
+      Number of fibers: 406 (clustered 111)
+      Number of segments: 971
+      Number of branch points: 329
+      Total length: 43241.93
+      Total volume: 5150823.10
+      Average radius: 5.775
+      Cylinder radius: 6.158
+      Bounding box volume: 683658224
 
 A reconstructed network can saved as we did before with :meth:`Qiber3D.Network.save`.
 The save function can be given a name for the save file.
@@ -149,21 +150,24 @@ As source we will use a rasterized version of the synthetic test network (:meth:
     >>> config.extract.z_drop.apply = False
     # set a specific threshold to preserve radius
     >>> config.extract.binary.threshold = 29
-    >>> config.core_count = 1
     # export the synthetic network as .tif file
     >>> syn_net.export('synthetic.tif', voxel_resolution=voxel_resolution, overwrite=True)
     Qiber3D_render [INFO] Rasterizing network (voxel resolution : 5.00E+00 voxel/unit)
     Qiber3D_core [INFO] Network exported to synthetic.tif.
     # import .tif file
     >>> net = Network.load('synthetic.tif')
+    Qiber3D_render [INFO] Rasterizing network (voxel resolution : 5.00E+00 voxel/unit)
+    Qiber3D_core [INFO] Network exported to synthetic.tif
     Qiber3D_extract [INFO] Load image data from synthetic.tif
+    Qiber3D_extract [INFO] Image voxel size: [0.200,0.200,0.200]
     Qiber3D_extract [INFO] Resample image to cubic voxels
     Qiber3D_extract [INFO] Generate binary representation
+    Qiber3D_extract [INFO] Binary representation used a threshold of 29.0% (direct)
     Qiber3D_extract [INFO] reconstruct image
     Qiber3D_reconstruct [INFO] Skeletonize image by thinning
     Qiber3D_reconstruct [INFO] Euclidean distance transformation
     Qiber3D_reconstruct [INFO] Link up skeleton
-    Qiber3D_reconstruct [INFO] Build Qiber3D.Network for the raw graph
+    Qiber3D_reconstruct [INFO] Build Qiber3D.Network from the raw graph
     Qiber3D_reconstruct [INFO] Cleaning Network
     Qiber3D_reconstruct [INFO] Smooth Segments
     >>> print(net)
@@ -172,10 +176,10 @@ As source we will use a rasterized version of the synthetic test network (:meth:
       Number of segments: 11
       Number of branch points: 4
       Total length: 1120.84
-      Total volume: 4665.62
+      Total volume: 4665.63
       Average radius: 0.960
       Cylinder radius: 1.151
-      Bounding box volume: 800047
+      Bounding box volume: 799821
 
 
 Based on the synthetic network we can explore further export options of a :class:`Qiber3D.Network`.

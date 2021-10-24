@@ -9,7 +9,7 @@ This is possible through the `binder service <https://mybinder.org>`_, allowing 
 It is important to note that the provided environments do not have enough memory to work with full resolution image stacks.
 The included examples should still be helpful to start with :mod:`Qiber3D`.
 
-`To start the JupyterLab click here! <https://mybinder.org/v2/gh/theia-dev/Qiber3D_jupyter/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Ftheia-dev%252FQiber3D%26urlpath%3Dtree%252FQiber3D%252Fdocs%252Fjupyter%252Findex.ipynb%26branch%3Ddev>`_
+`To start the JupyterLab click here! <https://mybinder.org/v2/gh/theia-dev/Qiber3D_jupyter/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Ftheia-dev%252FQiber3D%26urlpath%3Dtree%252FQiber3D%252Fdocs%252Fjupyter%252Findex.ipynb>`_
 
 Library
 =======
