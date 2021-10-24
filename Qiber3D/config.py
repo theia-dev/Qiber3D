@@ -121,6 +121,8 @@ class extract:
         """float: distance between interpolated points (every segment will have at least five points)"""
         sliver_threshold = 6
         """int: segments with less than ``sliver_threshold`` voxels will be treated specially (minimum of 6)"""
+        distance_voxel_overlap = 15
+        """int: Overlap in voxel for the low memory euclidean distance transformation"""
 
     class teasar:
         """TEASER reconstruction - for parameter explanation see

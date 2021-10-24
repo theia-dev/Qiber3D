@@ -277,11 +277,13 @@ class Reconstruct:  # BJH
             cls.__join_branch_point(net, point, segment_ids)
 
     @classmethod
-    def create_base_network(cls, image):
+    def create_base_network(cls, image, low_memory=False, distance_voxel_overlap=15):
         """
         Create a unoptimized :class:`Qiber3D.Network` from a binary image.
 
         :param np.ndarray image: binary image stack
+        :param bool low_memory: split the image for the euclidean distance transformation
+        :param int distance_voxel_overlap: overlap for the low memory euclidean distance transformation in voxel
         :return: :class:`Qiber3D.Network`
         """
 
@@ -311,7 +313,33 @@ class Reconstruct:  # BJH
                                   ))
 
         cls.logger.info(f'Euclidean distance transformation')
-        distances = ndimage.distance_transform_edt(image)
+
+        if not low_memory:
+            distances = ndimage.distance_transform_edt(image)
+        else:
+            split = 2
+            distances = np.zeros_like(image, dtype=float)
+            axs = [[], [], []]
+            axr = [[], [], []]
+            axd = [[], [], []]
+            s = np.array(image.shape) / split
+            for n in range(split):
+                for ax in range(3):
+                    raw_s = (int(max(0, round(n * s[ax] - distance_voxel_overlap))), int(min(round((n + 1) * s[ax] + distance_voxel_overlap), image.shape[ax])))
+                    raw_r = (int(max(0, round(n * s[ax]))), int(min(round((n + 1) * s[ax]), image.shape[ax])))
+                    raw_d = [raw_r[0]-raw_s[0], raw_r[1]-raw_s[1]]
+                    if raw_d[1] == 0:
+                        raw_d[1] = image.shape[ax]
+                    axs[ax].append(raw_s)
+                    axr[ax].append(raw_r)
+                    axd[ax].append(raw_d)
+
+            for x in range(split):
+                for y in range(split):
+                    for z in range(split):
+                        distances[axr[0][x][0]:axr[0][x][1], axr[1][y][0]:axr[1][y][1], axr[2][z][0]:axr[2][z][1]] = \
+                            ndimage.distance_transform_edt(image[axs[0][x][0]:axs[0][x][1], axs[1][y][0]:axs[1][y][1], axs[2][z][0]:axs[2][z][1]]
+                                                           )[axd[0][x][0]:axd[0][x][1], axd[1][y][0]:axd[1][y][1], axd[2][z][0]:axd[2][z][1]]
 
         graph = nx.Graph()
         volume_shape = image.shape
@@ -331,8 +359,8 @@ class Reconstruct:  # BJH
             graph.add_edges_from(zip(from_points_ids, to_points_ids))
 
         cls.logger.info(f'Build Qiber3D.Network from the raw graph')
-        segment_data = Qiber3D.IO.load._from_graph(graph, point_lookup=volume_shape,
-                                                   radius_lookup=distances, ravel=True)
+        segment_data = Qiber3D.IO.load._from_graph(graph, point_lookup=volume_shape, radius_lookup=distances,
+                                                   ravel=True)
         data = {
             'path': None,
             'name': 'reconstruct',
@@ -341,7 +369,8 @@ class Reconstruct:  # BJH
         return net
 
     @classmethod
-    def get_network(cls, image, scale=1.0, input_path=None, sliver_threshold=6, voxel_per_point=10.0):
+    def get_network(cls, image, scale=1.0, input_path=None, sliver_threshold=6, voxel_per_point=10.0,
+                    low_memory=False, distance_voxel_overlap=15):
         """
         Create a cleaned and smoothed :class:`Qiber3D.Network` from a binary image.
 
@@ -351,9 +380,11 @@ class Reconstruct:  # BJH
         :type input_path: str, Path
         :param int sliver_threshold: treat smaller segments
         :param float voxel_per_point: distance between interpolated points
+        :param bool low_memory: low memory mode
+        :param int distance_voxel_overlap: overlap for the low memory euclidean distance transformation in voxel
         :return: :class:`Qiber3D.Network`
         """
-        net = cls.create_base_network(image)
+        net = cls.create_base_network(image, low_memory=low_memory, distance_voxel_overlap=distance_voxel_overlap)
         cls.clean(net, sliver_threshold=sliver_threshold)
         net = Qiber3D.IO.load.network(net)
         cls.smooth(net, voxel_per_point=voxel_per_point)

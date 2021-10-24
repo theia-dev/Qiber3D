@@ -121,7 +121,9 @@ class Extractor:
             self.net = Qiber3D.Reconstruct.get_network(self.image_stack, scale=self.xy_spacing,
                                                        input_path=self.input_path,
                                                        sliver_threshold=self.config.extract.thinning.sliver_threshold,
-                                                       voxel_per_point=self.config.extract.thinning.voxel_per_point
+                                                       voxel_per_point=self.config.extract.thinning.voxel_per_point,
+                                                       low_memory=self.config.extract.low_memory,
+                                                       distance_voxel_overlap=self.config.extract.thinning.distance_voxel_overlap
                                                        )
         self.net.extractor_data = ex_data
         self.net.extractor_steps = self.storage
