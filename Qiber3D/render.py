@@ -226,7 +226,7 @@ class Render:
         z_drop_vol = vedo.Volume(z_drop, spacing=original_spacing)
         z_drop_threshold = filters.threshold_otsu(z_drop)
 
-        binary_vol = vedo.Volume(self.network.extractor_steps['is_final'], spacing=cubic_spacing)
+        binary_vol = vedo.Volume(self.network.extractor_steps['is_final'].astype(np.uint8), spacing=cubic_spacing)
 
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
 
@@ -337,7 +337,7 @@ class Render:
     @staticmethod
     def show_3d_image(image, name, binary=False, spacing=None):
         """
-        Visualize a image stack interactively. The threshold can be altered in the opened window.
+        Visualize an image stack interactively. The threshold can be altered in the opened window.
 
         :param np.ndarray image: image stack
         :param str name: display name
@@ -345,13 +345,14 @@ class Render:
         :param tuple(float) spacing: spacing in all three axis
         """
         vp = vedo.Plotter(axes=1)
-        vedo.settings.useParallelProjection = True
-        vol = vedo.Volume(image, spacing=spacing)
-        vol_text = vedo.Text2D(name, c='black')
-
+        vedo.settings.use_parallel_projection = True
         if binary:
+            vol = vedo.Volume(image.astype(np.uint8), spacing=spacing)
+            vol_text = vedo.Text2D(name, c='black')
             window = vp.show((vol.isosurface(1), vol_text))
         else:
+            vol = vedo.Volume(image, spacing=spacing)
+            vol_text = vedo.Text2D(name, c='black')
             threshold = filters.threshold_otsu(image)
             iso_surface = vol.isosurface(threshold)
             image_max = np.max(image)
@@ -366,7 +367,7 @@ class Render:
                 vp.actors = [new_actor] + vp.actors[1:]
 
             vp.addSlider2D(iso_slider, xmin=0, xmax=100, value=(threshold / image_max) * 100, pos=4,
-                           title='threshold', showValue=True, )
+                           title='threshold', show_value=True, )
             window = vp.show((iso_surface, vol_text))
         window.close()
         #vedo.closePlotter()
