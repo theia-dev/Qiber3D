@@ -183,7 +183,6 @@ class Extractor:
         if self.config.extract.invert:
             raw_image = 1.0 - raw_image
         images.close()
-        self.logger.info(f'Image voxel count: [{raw_image.shape[0]},{raw_image.shape[1]},{raw_image.shape[2]}]')
         return raw_image
 
     def __prepare_image(self):

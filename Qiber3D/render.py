@@ -17,8 +17,8 @@ from PIL import Image
 from matplotlib import cm
 from scipy import ndimage
 from skimage import filters
-from vtk.util.numpy_support import vtk_to_numpy
-
+from vtkmodules.util.numpy_support import vtk_to_numpy
+from vedo.applications import IsosurfaceBrowser
 from Qiber3D import helper, config
 
 if config.render.notebook:
@@ -347,30 +347,18 @@ class Render:
         vp = vedo.Plotter(axes=1)
         vedo.settings.use_parallel_projection = True
         if binary:
-            vol = vedo.Volume(image.astype(np.uint8), spacing=spacing)
+            vol = vedo.Volume(np.moveaxis(image.astype(np.uint8), 0, -1), spacing=spacing)
             vol_text = vedo.Text2D(name, c='black')
             window = vp.show((vol.isosurface(1), vol_text))
         else:
-            vol = vedo.Volume(image, spacing=spacing)
             vol_text = vedo.Text2D(name, c='black')
+            vol = vedo.Volume(np.moveaxis(image, 0, -1), spacing=spacing)
             threshold = filters.threshold_otsu(image)
-            iso_surface = vol.isosurface(threshold)
-            image_max = np.max(image)
-
-            def iso_slider(widget, event):
-                previous_actor = vp.actors[0]
-                slider_value = widget.GetRepresentation().GetValue()
-                real_value = image_max * slider_value / 100
-                new_actor = vol.isosurface(real_value).alpha(iso_surface.alpha())
-                vp.renderer.RemoveActor(previous_actor)
-                vp.renderer.AddActor(new_actor)
-                vp.actors = [new_actor] + vp.actors[1:]
-
-            vp.addSlider2D(iso_slider, xmin=0, xmax=100, value=(threshold / image_max) * 100, pos=4,
-                           title='threshold', show_value=True, )
-            window = vp.show((iso_surface, vol_text))
+            plt = IsosurfaceBrowser(vol, isovalue=threshold,use_gpu=True, c='red')
+            plt.add(vol_text)
+            window = plt.show()
         window.close()
-        #vedo.closePlotter()
+        # vedo.closePlotter()
 
     @classmethod
     def save_3d_image(cls, image, out_path='.', overwrite=False, image_resolution=None, binary=False,

@@ -27,9 +27,9 @@ setup(name=config.app_name,
       license='MIT',
       packages=['Qiber3D'],
       include_package_data=True,
-      install_requires=["nd2reader==3.3.0", "vedo==2021.0.5", "PIMS==0.5", "tifffile==2021.10.10", "networkx==2.6.3",
-                        "matplotlib==3.4.3", "blosc==1.10.6", "openpyxl==3.0.9", "vtk==9.0.3", "kimimaro==3.0.0",
-                        "scipy==1.7.1", "tqdm==4.62.3", "scikit-image==0.18.3", "numpy==1.21.2", "Pillow==8.3.2"],
+      install_requires=["nd2reader>=3.3.0", "vedo>=2023.5.0", "PIMS>=0.6.1", "tifffile>=2023.9.26", "networkx>=3.2.1",
+                        "matplotlib>=3.8.2", "blosc>=1.11.1", "openpyxl>=3.1.2", "vtk==9.3.0", "kimimaro>=3.0.0",
+                        "scipy>=1.11.3", "tqdm>=4.66.1", "scikit-image>=0.22.0", "numpy>=1.26.2", "Pillow>=10.1.0"],
       extras_require={
           'kimimaro': ['kimimaro']
       },
@@ -49,6 +49,9 @@ setup(name=config.app_name,
           'Operating System :: OS Independent',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: 3.9',
+          'Programming Language :: Python :: 3.10',
+          'Programming Language :: Python :: 3.11',
           'Programming Language :: Python :: 3 :: Only'
       ],
       )
