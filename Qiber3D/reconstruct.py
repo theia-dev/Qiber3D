@@ -4,7 +4,7 @@ import networkx as nx
 import numpy as np
 from scipy import interpolate
 from scipy import ndimage
-from skimage.morphology import skeletonize_3d
+from skimage.morphology import skeletonize
 from tqdm import tqdm
 
 import Qiber3D
@@ -152,7 +152,7 @@ class Reconstruct:  # BJH
                     # check if a path is possible through the island that is over the dust_threshold
                     possible_paths = [path for path in
                                       sum([list(entry.values()) for entry in
-                                           nx.shortest_path(conglomerate).values()], [])
+                                           dict(nx.shortest_path(conglomerate)).values()], [])
                                       if len(path) > 1]
                     longest_path = max(possible_paths, key=lambda p: cls.__path_length(conglomerate, p))
                     if cls.__path_length(conglomerate, longest_path) > sliver_threshold:
@@ -288,7 +288,7 @@ class Reconstruct:  # BJH
         """
 
         cls.logger.info(f'Skeletonize image by thinning')
-        result = skeletonize_3d(image)
+        result = skeletonize(image)
         if cls.logger.level <= 10:
             Qiber3D.Render.show_3d_image(result, name='Skeleton', binary=True)
 

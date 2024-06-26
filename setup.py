@@ -27,9 +27,9 @@ setup(name=config.app_name,
       license='MIT',
       packages=['Qiber3D'],
       include_package_data=True,
-      install_requires=["nd2reader>=3.3.0", "vedo>=2023.5.0", "PIMS>=0.6.1", "tifffile>=2023.9.26", "networkx>=3.2.1",
-                        "matplotlib>=3.8.2", "blosc>=1.11.1", "openpyxl>=3.1.2", "vtk==9.3.0", "kimimaro>=3.0.0",
-                        "scipy>=1.11.3", "tqdm>=4.66.1", "scikit-image>=0.22.0", "numpy>=1.26.2", "Pillow>=10.1.0"],
+      install_requires=["nd2reader==3.*", "vedo==2024.*", "PIMS==0.7.*", "tifffile==2024.*", "networkx==3.*",
+                        "matplotlib==3.*", "blosc==1.11.*", "openpyxl==3.*", "vtk==9.*", "kimimaro==4.*", "scipy==1.*",
+                        "tqdm==4.*", "scikit-image==0.*", "numpy==1.*", "Pillow==10.*"],
       extras_require={
           'kimimaro': ['kimimaro']
       },

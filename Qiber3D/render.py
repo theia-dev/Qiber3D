@@ -183,7 +183,10 @@ class Render:
         :param tuple segment_list: limit the visualisation to certain segment (use sid)
         """
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
-        vedo.settings.useParallelProjection = True
+        if hasattr(vedo.settings, "useParallelProjection"):
+            vedo.settings.useParallelProjection = True
+        if hasattr(vedo.settings, "use_parallel_projection"):
+            vedo.settings.use_parallel_projection = True
         if config.render.notebook:
             helper.notebook_display_backend()
             tube_text = []
