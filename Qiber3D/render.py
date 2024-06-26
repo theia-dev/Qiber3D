@@ -348,7 +348,10 @@ class Render:
         :param tuple(float) spacing: spacing in all three axis
         """
         vp = vedo.Plotter(axes=1)
-        vedo.settings.use_parallel_projection = True
+        if hasattr(vedo.settings, "useParallelProjection"):
+            vedo.settings.useParallelProjection = True
+        if hasattr(vedo.settings, "use_parallel_projection"):
+            vedo.settings.use_parallel_projection = True
         if binary:
             vol = vedo.Volume(np.moveaxis(image.astype(np.uint8), 0, -1), spacing=spacing)
             vol_text = vedo.Text2D(name, c='black')
@@ -403,7 +406,10 @@ class Render:
             rgba = config.render.rgba
 
         helper.notebook_render_backend()
-        vedo.settings.useParallelProjection = False
+        if hasattr(vedo.settings, "useParallelProjection"):
+            vedo.settings.useParallelProjection = False
+        if hasattr(vedo.settings, "use_parallel_projection"):
+            vedo.settings.use_parallel_projection = False
         vol = vedo.Volume(image, spacing=spacing)
         if binary:
             vol = vol.isosurface(1)
@@ -455,7 +461,10 @@ class Render:
             return
 
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
-        vedo.settings.useParallelProjection = True
+        if hasattr(vedo.settings, "useParallelProjection"):
+            vedo.settings.useParallelProjection = True
+        if hasattr(vedo.settings, "use_parallel_projection"):
+            vedo.settings.use_parallel_projection = True
         vedo_obj = vedo.show(object_list, axes=0, offscreen=True, azimuth=azimuth, roll=roll, elevation=elevation)
 
         exporter = vtk.vtkX3DExporter()
@@ -602,7 +611,10 @@ class Render:
             background = config.render.background
 
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
-        vedo.settings.useParallelProjection = True
+        if hasattr(vedo.settings, "useParallelProjection"):
+            vedo.settings.useParallelProjection = True
+        if hasattr(vedo.settings, "use_parallel_projection"):
+            vedo.settings.use_parallel_projection = True
         helper.notebook_render_backend()
 
         vp = vedo.Plotter(axes=axes, offscreen=True, interactive=False, size=(image_resolution, image_resolution),
@@ -674,7 +686,10 @@ class Render:
             background = config.render.background
 
         helper.notebook_render_backend()
-        vedo.settings.useParallelProjection = False
+        if hasattr(vedo.settings, "useParallelProjection"):
+            vedo.settings.useParallelProjection = False
+        if hasattr(vedo.settings, "use_parallel_projection"):
+            vedo.settings.use_parallel_projection = False
 
         width = int(height / 9 * 16)
         height = int(round(height/2))*2
