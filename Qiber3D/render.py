@@ -242,7 +242,6 @@ class Render:
                    (z_drop_vol.isosurface(z_drop_threshold), text2),
                    (binary_vol.isosurface(1), text3),
                    object_list + [text4]), N=4)
-        vedo.plotter.closePlotter()
 
     @property
     def raster(self):
@@ -364,7 +363,6 @@ class Render:
             plt.add(vol_text)
             window = plt.show()
         window.close()
-        # vedo.closePlotter()
 
     @classmethod
     def save_3d_image(cls, image, out_path='.', overwrite=False, image_resolution=None, binary=False,
