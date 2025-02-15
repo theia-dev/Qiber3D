@@ -222,14 +222,15 @@ class Render:
         cubic_spacing = [self.network.extractor_data['xy_spacing']] * 3
 
         original = self.network.extractor_steps['is_raw']
-        original_vol = vedo.Volume(original, spacing=original_spacing)
+        original_vol = vedo.Volume(np.moveaxis(original, 0, -1), spacing=original_spacing)
         original_threshold = filters.threshold_otsu(original)
 
         z_drop = self.network.extractor_steps['is_z_drop']
-        z_drop_vol = vedo.Volume(z_drop, spacing=original_spacing)
+        z_drop_vol = vedo.Volume(np.moveaxis(z_drop, 0, -1), spacing=original_spacing)
         z_drop_threshold = filters.threshold_otsu(z_drop)
 
-        binary_vol = vedo.Volume(self.network.extractor_steps['is_final'].astype(np.uint8), spacing=cubic_spacing)
+        binary_step = self.network.extractor_steps['is_final'].astype(np.uint8)
+        binary_vol = vedo.Volume(np.moveaxis(binary_step, 0, -1), spacing=cubic_spacing)
 
         object_list = self.__set_up_objects(color_mode, color, color_map, object_type, segment_list)
 
