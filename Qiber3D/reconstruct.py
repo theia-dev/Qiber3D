@@ -279,18 +279,18 @@ class Reconstruct:  # BJH
     @classmethod
     def create_base_network(cls, image, low_memory=False, distance_voxel_overlap=15):
         """
-        Create a unoptimized :class:`Qiber3D.Network` from a binary image.
+        Create an unoptimized :class:`Qiber3D.Network` from a binary image.
 
         :param np.ndarray image: binary image stack
-        :param bool low_memory: split the image for the euclidean distance transformation
-        :param int distance_voxel_overlap: overlap for the low memory euclidean distance transformation in voxel
+        :param bool low_memory: split the image for the Euclidean distance transformation
+        :param int distance_voxel_overlap: overlap for the low memory Euclidean distance transformation in voxel
         :return: :class:`Qiber3D.Network`
         """
 
         cls.logger.info(f'Skeletonize image by thinning')
         result = skeletonize(image)
         if cls.logger.level <= 10:
-            Qiber3D.Render.show_3d_image(result, name='Skeleton', binary=True)
+            Qiber3D.Render.show_3d_image(result, name='Skeleton', binary=True, thin=True)
 
         slice_dict = {
             -1: (np.s_[:-1], np.s_[1:]),

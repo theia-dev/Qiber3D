@@ -102,25 +102,13 @@ class Extractor:
                    'z_spacing': self.z_spacing,
                    'processing_data': self.processing_data}
 
-        if self.config.extract.use_teasar:
-            self.segments = self.__teasar_reconstruct(self.image_stack,
-                                                      spacing=(self.xy_spacing, self.xy_spacing, self.xy_spacing),
-                                                      core_count=self.core_count,
-                                                      debug=self.logger.level <= logging.DEBUG)
-            network_data = {
-                'path': self.input_path,
-                'name': self.input_path.with_suffix('').name,
-                'segments': self.segments
-            }
-            self.net = Qiber3D.Network(network_data)
-        else:
-            self.net = Qiber3D.Reconstruct.get_network(self.image_stack, scale=self.xy_spacing,
-                                                       input_path=self.input_path,
-                                                       sliver_threshold=self.config.extract.thinning.sliver_threshold,
-                                                       voxel_per_point=self.config.extract.thinning.voxel_per_point,
-                                                       low_memory=self.config.extract.low_memory,
-                                                       distance_voxel_overlap=self.config.extract.thinning.distance_voxel_overlap
-                                                       )
+        self.net = Qiber3D.Reconstruct.get_network(self.image_stack, scale=self.xy_spacing,
+                                                   input_path=self.input_path,
+                                                   sliver_threshold=self.config.extract.thinning.sliver_threshold,
+                                                   voxel_per_point=self.config.extract.thinning.voxel_per_point,
+                                                   low_memory=self.config.extract.low_memory,
+                                                   distance_voxel_overlap=self.config.extract.thinning.distance_voxel_overlap
+                                                   )
         self.net.extractor_data = ex_data
         self.net.extractor_steps = self.storage
 

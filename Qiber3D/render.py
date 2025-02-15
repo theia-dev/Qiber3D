@@ -164,8 +164,6 @@ class Render:
             obj_list += [vedo.Line(seg.point, c=[(0, 0, 0)]*len(seg.point)) for seg in render_segments]
 
         else:
-            for seg in render_segments:
-                print(seg._color)
             obj_list = [vedo.Tube(seg.point, r=seg.radius, c=[seg._color]*len(seg.point)) for seg in render_segments]
         if raster_prepare:
             return obj_list, [(seg.point, seg.radius) for seg in render_segments]
@@ -339,13 +337,14 @@ class Render:
         return result
 
     @staticmethod
-    def show_3d_image(image, name, binary=False, spacing=None):
+    def show_3d_image(image, name, binary=False, thin=False, spacing=None):
         """
         Visualize an image stack interactively. The threshold can be altered in the opened window.
 
         :param np.ndarray image: image stack
         :param str name: display name
         :param bool binary: if the image stack is already binary
+        :param bool thin: if the image is thin (skeleton) don't use isosurfaces (only used for binary cases)
         :param tuple(float) spacing: spacing in all three axis
         """
         vp = vedo.Plotter(axes=1)
@@ -354,9 +353,15 @@ class Render:
         if hasattr(vedo.settings, "use_parallel_projection"):
             vedo.settings.use_parallel_projection = True
         if binary:
-            vol = vedo.Volume(np.moveaxis(image.astype(np.uint8), 0, -1), spacing=spacing)
             vol_text = vedo.Text2D(name, c='black')
-            window = vp.show((vol.isosurface(1), vol_text))
+            if thin:
+                image = np.moveaxis(image, 0, -1)
+                cube_collection = list(zip(*image.nonzero()))
+                vol = vedo.Spheres(cube_collection, c="Black", r=1, res=4)
+                window = vp.show((vol, vol_text))
+            else:
+                vol = vedo.Volume(np.moveaxis(image.astype(np.uint8), 0, -1), spacing=spacing)
+                window = vp.show((vol.isosurface(1), vol_text))
         else:
             vol_text = vedo.Text2D(name, c='black')
             vol = vedo.Volume(np.moveaxis(image, 0, -1), spacing=spacing)
