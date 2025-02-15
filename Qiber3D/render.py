@@ -14,7 +14,7 @@ import tifffile as tif
 import vedo
 import vtk
 from PIL import Image
-from matplotlib import cm
+from matplotlib import colormaps
 from scipy import ndimage
 from skimage import filters
 from vtkmodules.util.numpy_support import vtk_to_numpy
@@ -73,7 +73,7 @@ class Render:
         for fiber in self.network.clustered_segments:
             max_length = max(max_length, sum([self.network.segment[sid].length for sid in fiber]))
 
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         for fiber in self.network.fiber.values():
             for sid in fiber.segment:
                 self.network.segment[sid]._color = cmp(fiber.length / max_length)[:3]
@@ -83,7 +83,7 @@ class Render:
         for fiber in self.network.clustered_segments:
             max_volume = max(max_volume, sum([self.network.segment[sid].volume for sid in fiber]))
 
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         for fiber in self.network.fiber.values():
             for sid in fiber.segment:
                 self.network.segment[sid]._color = cmp(fiber.volume / max_volume)[:3]
@@ -96,7 +96,7 @@ class Render:
         for sid in self.network.separate_segments:
             self.network.segment[sid]._color = [0.5, 0.5, 0.5]
 
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         for fiber in self.network.clustered_segments:
             for sid in fiber:
                 self.network.segment[sid]._color = cmp(len(fiber) / max_segment_count)[:3]
@@ -105,13 +105,13 @@ class Render:
         for sid in self.network.separate_segments:
             self.network.segment[sid]._color = [0.5, 0.5, 0.5]
 
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         for n, fiber in enumerate(self.network.clustered_segments):
             for sid in fiber:
                 self.network.segment[sid]._color = cmp(n / len(self.network.clustered_segments))[:3]
 
     def __color_segment(self, color_map):
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         random.seed('segment_seed')
         sample = random.sample(list(self.network.segment), len(self.network.segment))
         for n, sid in enumerate(sample):
@@ -119,13 +119,13 @@ class Render:
 
     def __color_segment_length(self, color_map):
         max_length = max([segment.length for segment in self.network.segment.values()])
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         for segment in self.network.segment.values():
             segment._color = cmp(segment.length / max_length)[:3]
 
     def __color_segment_volume(self, color_map):
         max_volume = max([segment.volume for segment in self.network.segment.values()])
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         for segment in self.network.segment.values():
             segment._color = cmp(segment.volume / max_volume)[:3]
 
@@ -157,14 +157,16 @@ class Render:
             render_segments = [self.network.segment[sid] for sid in segment_list]
 
         if object_type == 'line':
-            obj_list = [vedo.Line(seg.point, c=seg._color, lw=2) for seg in render_segments]
+            obj_list = [vedo.Line(seg.point, c=[seg._color]*len(seg.point), lw=2) for seg in render_segments]
         elif object_type == 'mixed':
             rastered = self.raster
             obj_list = [vedo.Volume(rastered, spacing=[1.0/self.raster_resolution]*3, origin=-self.raster_offset/self.raster_resolution)]
-            obj_list += [vedo.Line(seg.point, c=(0, 0, 0)) for seg in render_segments]
+            obj_list += [vedo.Line(seg.point, c=[(0, 0, 0)]*len(seg.point)) for seg in render_segments]
 
         else:
-            obj_list = [vedo.Tube(seg.point, r=seg.radius, c=seg._color) for seg in render_segments]
+            for seg in render_segments:
+                print(seg._color)
+            obj_list = [vedo.Tube(seg.point, r=seg.radius, c=[seg._color]*len(seg.point)) for seg in render_segments]
         if raster_prepare:
             return obj_list, [(seg.point, seg.radius) for seg in render_segments]
         else:
@@ -555,7 +557,7 @@ class Render:
             return None
         # image = np.transpose(image, (1, 0))
         image = image.astype(float)
-        cmp = cm.get_cmap(color_map)
+        cmp = colormaps.get_cmap(color_map)
         image = (image - np.min(image)) / (np.max(image) - np.min(image))
         image = cmp(image)
         image = (image*255).astype(np.uint8)

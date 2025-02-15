@@ -10,10 +10,6 @@ from scipy import ndimage
 from scipy.optimize import curve_fit
 from skimage import filters
 
-try:
-    import kimimaro
-except ImportError:
-    kimimaro = None
 
 import Qiber3D
 from Qiber3D import config, helper
@@ -239,80 +235,6 @@ class Extractor:
 
         if self.config.extract.save_steps:
             self.storage['is_final'] = self.image_stack
-
-    @staticmethod
-    def __teasar_reconstruct(image, spacing, core_count=0, debug=False):
-        if kimimaro is None:
-            raise ImportError("kimimaro is not installed (pip install -U kimimaro)")
-            return
-        label_im, nb_labels = ndimage.label(image)
-        teasar_params = {}
-        for key in ['scale', 'const', 'pdrf_exponent', 'pdrf_scale',
-                    'soma_detection_threshold', 'soma_acceptance_threshold',
-                    'soma_invalidation_scale', 'soma_invalidation_const', 'max_paths']:
-            teasar_params[key] = getattr(config.extract.teasar, key)
-        skeleton = kimimaro.skeletonize(
-            label_im,
-            teasar_params=teasar_params,
-            dust_threshold=config.extract.teasar.dust_threshold // np.prod(spacing),  # skip connected components with fewer than this many voxels
-            anisotropy=spacing,  # default True
-            fix_branching=True,  # default True
-            fix_borders=True,  # default True
-            fill_holes=False,  # default False
-            fix_avocados=False,  # default False
-            progress=debug,  # default False, show progress bar
-            parallel=core_count,  # <= 0 all cpu, 1 single process, 2+ multiprocess
-            parallel_chunk_size=50,  # how many skeletons to process before updating progress bar
-        )
-
-        segment_data = {}
-        seg_id = 0
-        for network in skeleton.values():
-            segments = []
-            start_points = None
-            stop_points = []
-            network_graph = nx.Graph()
-            network_graph.add_edges_from(network.edges)
-            for node in network_graph:
-                if len(network_graph.adj[node]) == 1:
-                    start_points = [(node,)]
-                    break
-            if start_points is None:
-                start_points = [(network_graph.nodes[0],)]
-
-            while start_points:
-                start = start_points.pop()
-                if len(start) == 1:
-                    new_segment = [start[0]]
-                    start = start[0]
-                else:
-                    if not network_graph.has_edge(start[0], start[1]):
-                        continue
-                    new_segment = [start[0], start[1]]
-                    network_graph.remove_edge(start[0], start[1])
-                    start = start[1]
-                for f, t in nx.dfs_successors(network_graph, start).items():
-                    if len(t) == 1:
-                        new_segment.append(t[0])
-                        network_graph.remove_edge(f, t[0])
-                        if t[0] in stop_points:
-                            break
-                    elif len(t) > 1:
-                        for paths in t:
-                            start_points.append((f, paths))
-                        stop_points.append(f)
-                        break
-                segments.append(new_segment)
-
-            for seg in segments:
-                points = np.array([(round(x, 4), round(y, 4), round(z, 4)) for (z, y, x) in network.vertices[seg]])
-                segment_data[seg_id] = dict(
-                    points=points,
-                    radius=network.radius[seg],
-                    seg_id=seg_id
-                )
-                seg_id += 1
-        return segment_data
 
     @staticmethod
     def filter_morph(image, iterations=None, remove_vol=None, voxel_spacing=1):

@@ -1,5 +1,5 @@
 nd2reader==3.*
-vedo==2024.*
+vedo==2025.*
 PIMS==0.7.*
 tifffile==2024.*
 networkx==3.*
@@ -7,7 +7,6 @@ matplotlib==3.*
 blosc==1.11.*
 openpyxl==3.*
 vtk==9.*
-kimimaro==4.*
 scipy==1.*
 tqdm==4.*
 scikit-image==0.*

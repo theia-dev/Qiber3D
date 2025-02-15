@@ -68,9 +68,6 @@ class extract:
     """list(float): size of a voxel in each axis"""
     invert = False
     """bool: invert the input image (extracted structures should be high and background low)"""
-    use_teasar = False
-    """bool: if ``True`` use the `kimimaro <https://github.com/seung-lab/kimimaro>`_ 
-    TEASAR implementation for reconstruction"""
 
     class z_drop:
         """Z-Drop - Intensity attenuation correction"""
@@ -123,17 +120,3 @@ class extract:
         """int: segments with less than ``sliver_threshold`` voxels will be treated specially (minimum of 6)"""
         distance_voxel_overlap = 15
         """int: Overlap in voxel for the low memory euclidean distance transformation"""
-
-    class teasar:
-        """TEASER reconstruction - for parameter explanation see
-        `kimimaro <https://github.com/seung-lab/kimimaro>`_"""
-        dust_threshold = 600  # cubic physical units
-        scale = 1
-        const = 0  # physical units
-        pdrf_exponent = 4
-        pdrf_scale = 100000
-        soma_detection_threshold = 1100  # physical units
-        soma_acceptance_threshold = 3500  # physical units
-        soma_invalidation_scale = 1.0
-        soma_invalidation_const = 300  # physical units
-        max_paths = 50  # default None

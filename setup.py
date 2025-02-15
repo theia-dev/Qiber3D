@@ -28,11 +28,8 @@ setup(name=config.app_name,
       packages=['Qiber3D'],
       include_package_data=True,
       install_requires=["nd2reader==3.*", "vedo==2024.*", "PIMS==0.7.*", "tifffile==2024.*", "networkx==3.*",
-                        "matplotlib==3.*", "blosc==1.11.*", "openpyxl==3.*", "vtk==9.*", "kimimaro==4.*", "scipy==1.*",
+                        "matplotlib==3.*", "blosc==1.11.*", "openpyxl==3.*", "vtk==9.*", "scipy==1.*",
                         "tqdm==4.*", "scikit-image==0.*", "numpy==1.*", "Pillow==10.*"],
-      extras_require={
-          'kimimaro': ['kimimaro']
-      },
       zip_safe=True,
       keywords=['Skeleton', 'Network', 'Fiber', 'Reconstruction', 'Neurons',
                 'Vessel', 'Vascular', 'confocal', 'microscopy'],
