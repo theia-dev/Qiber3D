@@ -11,8 +11,9 @@ import Qiber3D
 
 
 class Reconstruct:  # BJH
-
-    logger = Qiber3D.helper.get_logger()
+    def __init__(self):
+        import Qiber3D.helper
+        self.logger = Qiber3D.helper.get_logger()
 
     @staticmethod
     def __paths_to_edges(paths):
