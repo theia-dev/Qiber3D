@@ -476,7 +476,7 @@ class Render:
         exporter = vtk.vtkX3DExporter()
         exporter.SetBinary(False)
         exporter.FastestOff()
-        exporter.SetInput(vedo.settings.plotter_instance.window)
+        exporter.SetInput(vedo.plotter_instance.window)
         exporter.SetFileName(str(out_path.absolute()))
         exporter.Update()
         exporter.Write()
@@ -782,7 +782,7 @@ class Render:
             cls.logger.warn('No work folder available to render data into.')
 
         w2if = vtk.vtkWindowToImageFilter()
-        w2if.SetInput(vedo.settings.plotter_instance.window)
+        w2if.SetInput(vedo.plotter_instance.window)
         w2if.SetInputBufferTypeToRGBA()
         w2if.ReadFrontBufferOff()  # read from the back buffer
         w2if.Update()
