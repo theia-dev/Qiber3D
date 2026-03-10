@@ -8,11 +8,13 @@ from skimage.morphology import skeletonize
 from tqdm import tqdm
 
 import Qiber3D
-
+import Qiber3D.helper  # ensure helper is available at module import time
 
 class Reconstruct:  # BJH
-
     logger = Qiber3D.helper.get_logger()
+
+    def __init__(self):
+        self.logger = self.__class__.logger
 
     @staticmethod
     def __paths_to_edges(paths):

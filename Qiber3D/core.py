@@ -297,7 +297,7 @@ class Network:
 
         self.center = self.bbox[0] + (self.bbox[1] - self.bbox[0]) / 2.0
         self.bbox_size = self.bbox[1] - self.bbox[0]
-        self.bbox_volume = np.product(self.bbox_size)
+        self.bbox_volume = np.prod(self.bbox_size)
 
         self.vector = np.vstack([seg.vector for seg in self.segment.values()])
         self.direction = np.array([seg.direction for seg in self.segment.values()])
